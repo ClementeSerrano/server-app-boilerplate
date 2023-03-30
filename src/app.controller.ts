@@ -8,7 +8,7 @@ export class AppController {
 
   @Post()
   @HttpCode(201)
-  createApp(@Body() createAppDto: CreateAppDto): CreateAppDto {
+  createApp(@Body() createAppDto: CreateAppDto): Promise<CreateAppDto> {
     return this.appService.createApp(createAppDto);
   }
 }
