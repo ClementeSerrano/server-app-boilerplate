@@ -17,9 +17,12 @@ export class GptService {
   public async createCodeCompletion(prompt: string): Promise<string> {
     const result = await this.client.createCompletion({
       model: 'text-davinci-003',
-      prompt: `Generate a single-file React app in Typescript based on: ${prompt}`,
-      max_tokens: 800,
-      temperature: 0.5,
+      prompt: `Generate a single-file React Typescript app based on this prompt: ${prompt}. The exported component should not receive props.`,
+      temperature: 0,
+      max_tokens: 4000,
+      top_p: 1.0,
+      frequency_penalty: 0.0,
+      presence_penalty: 0.0,
     });
 
     console.log({ result });

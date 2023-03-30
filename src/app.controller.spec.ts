@@ -16,7 +16,9 @@ describe('AppController', () => {
 
   describe('root', () => {
     it('should return "Hello World!"', () => {
-      expect(appController.createApp({ name: 'my-app' })).toBe('Hello World!');
+      expect(
+        appController.createApp({ name: 'my-app', prompt: 'the prompt' }),
+      ).toBe('Hello World!');
     });
   });
 });

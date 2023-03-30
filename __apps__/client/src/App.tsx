@@ -1,13 +1,21 @@
 
-      import React from 'react';
 
-      export default function App() {
-        return (
-          <div className="App">
-            <header className="App-header">
-              <h1>This is the pico app app!</h1>
-             </header>
-          </div>
-        )
-      };
-    
+import React, { useState } from 'react';
+
+const App: React.FC = () => {
+  const [name, setName] = useState('');
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setName(e.target.value);
+  };
+
+  return (
+    <div>
+      <h1>What's your name?</h1>
+      <input type="text" value={name} onChange={handleChange} />
+      <h2>Hello {name}!</h2>
+    </div>
+  );
+};
+
+export default App;
