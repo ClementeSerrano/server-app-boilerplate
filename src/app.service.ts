@@ -3,56 +3,35 @@ import * as path from 'path';
 import * as fs from 'fs';
 
 import { CreateAppDto } from './app.dto';
+import { execSync } from 'child_process';
 
 @Injectable()
 export class AppService {
   createApp(app: CreateAppDto): CreateAppDto {
-    const { name } = app;
+    const appName = app.name;
 
-    const appName = encodeURIComponent(name);
+    const srcDir = '__apps__/client/src';
 
-    const baseDir = '__app__';
-    const appDir = path.join(process.cwd(), baseDir, appName);
-    const publicDir = path.join(appDir, 'public');
-    const srcDir = path.join(appDir, 'src');
-
-    // Create app directories
-    fs.mkdirSync(baseDir);
-    fs.mkdirSync(appDir);
-    fs.mkdirSync(publicDir);
-    fs.mkdirSync(srcDir);
-
-    // Create index.html file
-    const indexHtml = `
-      <!DOCTYPE html>
-      <html lang="en">
-        <head>
-          <meta charset="utf-8" />
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <title>${appName}</title>
-        </head>
-        <body>
-          <div id="root" />
-          <script src="./src/index.tsx"></script>
-        </body>
-      </html>
-    `;
-
-    fs.writeFileSync(path.join(publicDir, 'index.html'), indexHtml);
-
-    // Create index.tsx file
-    const indexTsx = `
+    // Create App.tsx file
+    const appTsx = `
       import React from 'react';
-      import ReactDOM from 'react-dom';
 
-      function App() {
-        return <h1>Hello World!</h1>;
+      export default function App() {
+        return (
+          <div className="App">
+            <header className="App-header">
+              <h1>This is the ${appName} app!</h1>
+             </header>
+          </div>
+        )
       };
-
-      ReactDOM.render(<App />, document.getElementById('root'));
     `;
 
-    fs.writeFileSync(path.join(srcDir, 'index.tsx'), indexTsx);
+    // Update the content in the App.tsx file
+    fs.writeFileSync(path.join(srcDir, 'App.tsx'), appTsx);
+
+    // Build the app
+    execSync('yarn --cwd __apps__/client build', { stdio: 'inherit' });
 
     // Return app
     return app;
