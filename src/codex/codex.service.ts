@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { Configuration, OpenAIApi } from 'openai';
 
 @Injectable()
-export class GptService {
+export class CodexService {
   private client: OpenAIApi;
 
   constructor(private configService: ConfigService) {
@@ -14,7 +14,7 @@ export class GptService {
     this.client = new OpenAIApi(config);
   }
 
-  public async createCodeCompletion(prompt: string): Promise<string> {
+  public async createCompletion(prompt: string): Promise<string> {
     const result = await this.client.createCompletion({
       model: 'text-davinci-003',
       prompt: `Generate a single-file React Typescript app based on this prompt: ${prompt}. The exported component should not receive props.`,

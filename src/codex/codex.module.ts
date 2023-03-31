@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
-import { GptService } from './gpt.service';
+import { CodexService } from './codex.service';
 
 @Module({
   imports: [ConfigModule],
-  providers: [GptService],
+  providers: [CodexService],
 })
-export class GptModule {}
+export class CodexModule {}

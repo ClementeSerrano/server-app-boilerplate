@@ -3,9 +3,9 @@ import { ConfigModule } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { GptService } from './gpt/gpt.service';
+import { CodexService } from './codex/codex.service';
+import { AppsController } from './apps/apps.controller';
+import { AppsService } from './apps/apps.service';
 
 @Module({
   imports: [
@@ -14,7 +14,7 @@ import { GptService } from './gpt/gpt.service';
       rootPath: join(__dirname, '..', '..', '__apps__', 'client', 'build'),
     }),
   ],
-  controllers: [AppController],
-  providers: [AppService, GptService],
+  controllers: [AppsController],
+  providers: [AppsService, CodexService],
 })
 export class AppModule {}

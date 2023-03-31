@@ -3,12 +3,12 @@ import * as path from 'path';
 import { exec } from 'child_process';
 import { writeFile } from 'fs/promises';
 
-import { CreateAppDto } from './app.dto';
-import { GptService } from './gpt/gpt.service';
+import { CreateAppDto } from './apps.dto';
+import { CodexService } from '../codex/codex.service';
 
 @Injectable()
-export class AppService {
-  constructor(private gptService: GptService) {}
+export class AppsService {
+  constructor(private codexService: CodexService) {}
 
   public async createApp(app: CreateAppDto): Promise<CreateAppDto> {
     // const appName = app.name;
@@ -16,19 +16,19 @@ export class AppService {
 
     const srcDir = '__apps__/client/src';
 
-    const appTsx = await this.gptService.createCodeCompletion(appPrompt);
+    const appTsx = await this.codexService.createCompletion(appPrompt);
 
     // Update the content in the App.tsx file
     await writeFile(path.join(srcDir, 'App.tsx'), appTsx);
 
     // Build the app
-    await this.buildApp();
+    await this.buildClientApp();
 
     // Return app
     return app;
   }
 
-  private buildApp(): Promise<void> {
+  private buildClientApp(): Promise<void> {
     return new Promise((resolve, reject) => {
       exec('cd __apps__/client && yarn build', (error, stdout, stderr) => {
         if (error) {
