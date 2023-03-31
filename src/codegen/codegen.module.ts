@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
-import { CodexService } from './codex.service';
+import { CodegenService } from './codegen.service';
 
 @Module({
   imports: [ConfigModule],
-  providers: [CodexService],
+  providers: [CodegenService],
 })
-export class CodexModule {}
+export class CodegenModule {}

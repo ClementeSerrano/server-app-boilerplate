@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 
-import { CodexService } from './codex/codex.service';
+import { CodegenService } from './codegen/codegen.service';
 import { AppsController } from './apps/apps.controller';
 import { AppsService } from './apps/apps.service';
 
@@ -15,6 +15,6 @@ import { AppsService } from './apps/apps.service';
     }),
   ],
   controllers: [AppsController],
-  providers: [AppsService, CodexService],
+  providers: [AppsService, CodegenService],
 })
 export class AppModule {}
