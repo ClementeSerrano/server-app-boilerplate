@@ -5,6 +5,7 @@ import { writeFile } from 'fs/promises';
 
 import { CreateAppDto } from './apps.dto';
 import { CodexService } from '../codex/codex.service';
+import { CLIENT_APPS_ROOT_PATH, CLIENT_APPS_SRC_PATH } from './apps.constants';
 
 @Injectable()
 export class AppsService {
@@ -14,14 +15,12 @@ export class AppsService {
     // const appName = app.name;
     const appPrompt = app.prompt;
 
-    const srcDir = '__apps__/client/src';
-
     const appTsx = await this.codexService.createCompletion(appPrompt);
 
     // Update the content in the App.tsx file
-    await writeFile(path.join(srcDir, 'App.tsx'), appTsx);
+    await writeFile(path.join(CLIENT_APPS_SRC_PATH, 'App.tsx'), appTsx);
 
-    // Build the app
+    // Build the client app
     await this.buildClientApp();
 
     // Return app
@@ -30,16 +29,19 @@ export class AppsService {
 
   private buildClientApp(): Promise<void> {
     return new Promise((resolve, reject) => {
-      exec('cd __apps__/client && yarn build', (error, stdout, stderr) => {
-        if (error) {
-          console.error(`exec error: ${error}`);
-          reject(error);
-          return;
-        }
-        console.log(`stdout: ${stdout}`);
-        console.error(`stderr: ${stderr}`);
-        resolve();
-      });
+      exec(
+        `cd ${CLIENT_APPS_ROOT_PATH} && yarn build`,
+        (error, stdout, stderr) => {
+          if (error) {
+            console.error(`exec error: ${error}`);
+            reject(error);
+            return;
+          }
+          console.log(`stdout: ${stdout}`);
+          console.error(`stderr: ${stderr}`);
+          resolve();
+        },
+      );
     });
   }
 }
