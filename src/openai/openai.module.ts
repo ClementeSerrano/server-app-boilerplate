@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
-import { CodegenService } from './codegen.service';
+import { OpenAIService } from './openai.service';
 
 @Module({
   imports: [ConfigModule],
-  providers: [CodegenService],
+  providers: [OpenAIService],
 })
-export class CodegenModule {}
+export class OpenAIModule {}

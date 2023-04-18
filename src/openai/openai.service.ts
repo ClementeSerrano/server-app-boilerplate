@@ -2,10 +2,10 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Configuration, OpenAIApi } from 'openai';
 
-import { CODEGEN_PROMPT_INSTRUCTIONS } from './codegen.contants';
+import { CODEGEN_PROMPT_INSTRUCTIONS } from './openai.contants';
 
 @Injectable()
-export class CodegenService {
+export class OpenAIService {
   private apiClient: OpenAIApi;
 
   constructor(private configService: ConfigService) {
@@ -50,11 +50,11 @@ export class CodegenService {
    * @returns A combined prompt string.
    */
   private generatePrompt(prompt: string): string {
-    return CODEGEN_PROMPT_INSTRUCTIONS + `\nFollow this prompt: ${prompt}`;
+    return CODEGEN_PROMPT_INSTRUCTIONS + `\nThe purpose of: ${prompt}`;
   }
 
   /**
-   * Sanitizes the completion result by removing unwanted text.
+   * Sanitizes the completion result by removing unwanted descriptions.
    * @param completion - The completion result returned by the API.
    * @returns A sanitized completion string.
    */

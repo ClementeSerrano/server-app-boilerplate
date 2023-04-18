@@ -8,8 +8,6 @@
 # compiled outputs
 /dist
 /node_modules
-/__apps__/client/build
-/__apps__/client/node_modules
 
 # Logs
 logs
