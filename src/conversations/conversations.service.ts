@@ -16,7 +16,7 @@ export class ConversationsService {
   ): Promise<string> {
     const prompt = params.prompt;
 
-    const response = await this.openaiService.createCompletion(prompt);
+    const response = await this.openaiService.createChatCompletion(prompt);
 
     // Return response
     return response;
