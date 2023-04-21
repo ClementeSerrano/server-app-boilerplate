@@ -10,6 +10,9 @@ export class User {
 
   @Prop()
   lastname: string;
+
+  @Prop([String])
+  preferences: string[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

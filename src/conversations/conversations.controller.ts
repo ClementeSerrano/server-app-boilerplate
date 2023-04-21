@@ -8,7 +8,7 @@ export class ConversationsController {
   constructor(private readonly conversationsService: ConversationsService) {}
 
   @Post()
-  @HttpCode(201)
+  @HttpCode(200)
   createConversation(
     @Body() createConversationDto: CreateConversationDto,
   ): Promise<string> {
