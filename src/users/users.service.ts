@@ -12,6 +12,14 @@ export class UserService {
     private readonly userModel: Model<User>,
   ) {}
 
+  public async findAll(): Promise<User[]> {
+    return this.userModel.find().exec();
+  }
+
+  public async findById(_id: string): Promise<User> {
+    return this.userModel.findById(_id).exec();
+  }
+
   public async create(createUserDto: CreateUserDto): Promise<User> {
     const createdUser = new this.userModel(createUserDto);
 
