@@ -19,13 +19,11 @@ export class ConversationsService {
   ): Promise<string> {
     const prompt = params.prompt;
 
-    const prevConversations = this.conversationModel.find().exec();
+    const prevConversations = await this.conversationModel.find().exec();
 
     console.log({ prevConversations });
 
-    // const response = await this.openaiService.createChatCompletion(prompt);
-
-    const response = 'pico';
+    const response = await this.openaiService.createChatCompletion(prompt);
 
     // Return response
     return response;

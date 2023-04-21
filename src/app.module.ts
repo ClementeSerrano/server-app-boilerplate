@@ -8,7 +8,7 @@ import { OpenAIModule } from './openai/openai.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    MongooseModule.forRoot('mongodb://localhost/nest'),
+    MongooseModule.forRoot(process.env.DATABASE_URI),
     ConversationsModule,
     OpenAIModule,
   ],

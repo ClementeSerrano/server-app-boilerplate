@@ -1,0 +1,46 @@
+version: '3.9'
+services:
+  service-dev:
+    container_name: service-dev
+    build:
+      context: .
+      target: development
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - ${PORT}:${PORT}
+    depends_on:
+      - mongodb
+    profiles:
+      - dev
+
+  service-prod:
+    container_name: service-prod
+    build:
+      context: .
+      target: production
+    environment:
+      - NODE_ENV=production
+    ports:
+      - 3001:${PORT}
+    depends_on:
+      - mongodb
+    profiles:
+      - prod
+
+  mongodb:
+    container_name: mongodb
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_data:/data/db
+    profiles:
+      - dev
+      - prod
+
+volumes:
+  mongodb_data:
