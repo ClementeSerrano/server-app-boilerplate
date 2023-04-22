@@ -2,9 +2,9 @@ import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
-import { CreateConversationDto } from './conversations.dto';
 import { OpenAIService } from '../openai/openai.service';
 import { Conversation } from './schemas/conversation.schema';
+import { CreateConversationDto } from './conversations.dto';
 
 @Injectable()
 export class ConversationsService {
@@ -14,10 +14,10 @@ export class ConversationsService {
     private openaiService: OpenAIService,
   ) {}
 
-  public async createConversation(
-    params: CreateConversationDto,
+  public async create(
+    createConversationDto: CreateConversationDto,
   ): Promise<string> {
-    const prompt = params.prompt;
+    const prompt = createConversationDto.prompt;
 
     const prevConversations = await this.conversationModel.find().exec();
 
@@ -25,7 +25,6 @@ export class ConversationsService {
 
     const response = await this.openaiService.createChatCompletion(prompt);
 
-    // Return response
     return response;
   }
 }

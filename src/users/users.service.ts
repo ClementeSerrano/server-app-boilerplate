@@ -20,9 +20,18 @@ export class UserService {
     return this.userModel.findById(_id).exec();
   }
 
+  async findByAnonUserId(anonUserId: string): Promise<User | null> {
+    return this.userModel.findOne({ anonUserId }).exec();
+  }
+
   public async create(createUserDto: CreateUserDto): Promise<User> {
     const createdUser = new this.userModel(createUserDto);
 
+    return createdUser.save();
+  }
+
+  async createAnonUser(anonUserId: string): Promise<User> {
+    const createdUser = new this.userModel({ anonUserId });
     return createdUser.save();
   }
 }

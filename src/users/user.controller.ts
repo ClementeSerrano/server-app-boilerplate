@@ -17,7 +17,6 @@ export class UserController {
   @Get(':_id')
   @HttpCode(200)
   findById(@Param('_id') _id: string): Promise<User> {
-    console.log({ _id });
     return this.userService.findById(_id);
   }
 

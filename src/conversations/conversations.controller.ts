@@ -9,9 +9,9 @@ export class ConversationsController {
 
   @Post()
   @HttpCode(200)
-  createConversation(
+  create(
     @Body() createConversationDto: CreateConversationDto,
   ): Promise<string> {
-    return this.conversationsService.createConversation(createConversationDto);
+    return this.conversationsService.create(createConversationDto);
   }
 }

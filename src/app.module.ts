@@ -1,9 +1,11 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { ConversationsModule } from './conversations/conversations.module';
 import { OpenAIModule } from './openai/openai.module';
+import { AnonUserMiddleware } from './users/anon-user.middleware';
+import { UserController } from './users/user.controller';
 import { UserModule } from './users/users.module';
 
 @Module({
@@ -15,4 +17,8 @@ import { UserModule } from './users/users.module';
     OpenAIModule,
   ],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(AnonUserMiddleware).forRoutes(UserController);
+  }
+}
