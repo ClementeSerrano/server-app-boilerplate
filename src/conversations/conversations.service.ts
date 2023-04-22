@@ -5,6 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { OpenAIService } from '../openai/openai.service';
 import { Conversation } from './schemas/conversation.schema';
 import { CreateConversationDto } from './conversations.dto';
+import { UserService } from 'src/users/users.service';
 
 @Injectable()
 export class ConversationsService {
@@ -12,6 +13,7 @@ export class ConversationsService {
     @InjectModel(Conversation.name)
     private readonly conversationModel: Model<Conversation>,
     private openaiService: OpenAIService,
+    private userService: UserService,
   ) {}
 
   public async create(
@@ -20,8 +22,6 @@ export class ConversationsService {
     const prompt = createConversationDto.prompt;
 
     const prevConversations = await this.conversationModel.find().exec();
-
-    console.log({ prevConversations });
 
     const response = await this.openaiService.createChatCompletion(prompt);
 

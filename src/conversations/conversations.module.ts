@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+
 import { OpenAIModule } from 'src/openai/openai.module';
-import { OpenAIService } from 'src/openai/openai.service';
+import { UserModule } from 'src/users/users.module';
 
 import { ConversationsController } from './conversations.controller';
 import { ConversationsService } from './conversations.service';
@@ -16,8 +17,9 @@ import {
       { name: Conversation.name, schema: ConversationSchema },
     ]),
     OpenAIModule,
+    UserModule,
   ],
   controllers: [ConversationsController],
-  providers: [ConversationsService, OpenAIService],
+  providers: [ConversationsService],
 })
 export class ConversationsModule {}
