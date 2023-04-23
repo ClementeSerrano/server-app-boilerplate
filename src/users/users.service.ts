@@ -25,6 +25,11 @@ export class UserService {
     return this.userModel.findById(_id).exec();
   }
 
+  public async findPreferences(_id: string): Promise<string[] | null> {
+    const user = await this.userModel.findById(_id).exec();
+    return user?.preferences || null;
+  }
+
   public async create(createUserDto: CreateUserDto): Promise<User> {
     const createdUser = new this.userModel(createUserDto);
     return createdUser.save();

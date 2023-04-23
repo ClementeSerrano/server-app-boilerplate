@@ -1,7 +1,7 @@
 import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 
-import { CreateConversationDto } from './conversations.dto';
 import { ConversationsService } from './conversations.service';
+import { ChatDto } from './dto/chat.dto';
 
 @Controller('conversations')
 export class ConversationsController {
@@ -9,9 +9,9 @@ export class ConversationsController {
 
   @Post()
   @HttpCode(200)
-  create(
-    @Body() createConversationDto: CreateConversationDto,
-  ): Promise<string> {
-    return this.conversationsService.create(createConversationDto);
+  chat(
+    @Body() chatDto: ChatDto,
+  ): Promise<{ response: string; conversationId: string }> {
+    return this.conversationsService.chat(chatDto);
   }
 }

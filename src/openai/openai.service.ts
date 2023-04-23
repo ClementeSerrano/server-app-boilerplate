@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Configuration, OpenAIApi } from 'openai';
+import { Message } from 'src/conversations/schemas/message.schema';
 
 import {
   CHAT_COMPLETION_BASE_CONFIG,
@@ -20,19 +21,21 @@ export class OpenAIService {
   }
 
   /**
-   * Generates code completion based on a given prompt.
-   * @param prompt - The prompt to generate code completion.
-   * @returns A Promise that resolves to the generated code completion.
+   * Generates a chat completion based on a given prompt and previous messages.
+   * @returns The generated chat completion.
    */
-  public async createChatCompletion(prompt: string): Promise<string> {
+  public async createChatCompletion(
+    prompt: string,
+    messages: Message[],
+  ): Promise<string> {
     try {
       const result = await this.apiClient.createChatCompletion({
         ...CHAT_COMPLETION_BASE_CONFIG,
         messages: [
           { role: 'system', content: this.generateChatSystemMessage() },
+          ...messages,
           { role: 'user', content: prompt },
         ],
-        // TODO: Add user field.
       });
 
       const completion = result.data.choices[0].message?.content;

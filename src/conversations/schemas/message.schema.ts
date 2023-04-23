@@ -1,17 +1,20 @@
-import * as mongoose from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
-import { User } from 'src/users/users.schema';
+import { ConversationUserRole } from '../conversations.types';
 
 export type MessageDocument = HydratedDocument<Message>;
 
 @Schema()
 export class Message {
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
-  author: User;
+  @Prop({
+    type: String,
+    required: true,
+    enum: ['system', 'user', 'assistant'],
+  })
+  role: ConversationUserRole;
 
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   content: string;
 }
 
