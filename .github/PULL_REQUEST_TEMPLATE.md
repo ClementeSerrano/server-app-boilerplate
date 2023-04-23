@@ -4,15 +4,9 @@ Provide a brief description of the new feature. Explain its purpose and any bene
 
 Fixes #(issue number)
 
-## Context
-
-Provide any relevant background information or context that helps explain why the feature was created. This could include user stories, problem statements, or any other motivating factors.
-
 ## How it was solved?
 
-- [ ] Bug fix (non-breaking change which fixes an issue)
-- [ ] New feature (non-breaking change which adds functionality)
-- [ ] Breaking change (fix or feature that would cause existing functionality to change)
+Provide a list of the tasks done for completing the solved issue.
 
 ## How has been tested?
 
