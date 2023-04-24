@@ -26,24 +26,63 @@
 
 Fixer server repository.
 
+## Prerequisites
+
+- Node.js (v14 or later)
+- Docker
+- Docker Compose (v1.29.0 or later)
+
 ## Installation
 
+1. Clone the repository on your machine:
+
 ```bash
-$ yarn install
+git clone https://github.com/FixerHQ/service.git
 ```
+
+2. Change to the project directory:
+
+```bash
+cd service
+```
+
+3. Install the dependencies:
+
+```bash
+yarn install
+```
+
+## Setup
+
+Create the `.env` file with the required environment variables from the `.env.example` file by running:
+
+```bash
+cp .env.example .env
+```
+
+Remember to replace the dummy values with real values for each variable.
 
 ## Running the app
 
+### Development
+
+Run the development environment using Docker Compose:
+
 ```bash
-# development
-$ yarn run start
-
-# watch mode
-$ yarn run start:dev
-
-# production mode
-$ yarn run start:prod
+docker-compose --profile dev up
 ```
+
+The app will be accessible at http://localhost:3000.
+
+### Production
+
+Run the production environment using Docker Compose:
+
+```bash
+docker-compose --profile prod up
+```
+
+The app will be accessible at http://localhost:3001.
 
 ## Test
 

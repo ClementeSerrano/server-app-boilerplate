@@ -1,14 +1,20 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-// import { ServeStaticModule } from '@nestjs/serve-static';
+import { MongooseModule } from '@nestjs/mongoose';
 
-import { ConversationsController } from './conversations/conversations.controller';
-import { OpenAIService } from './openai/openai.service';
-import { ConversationsService } from './conversations/conversations.service';
+import { ConversationsModule } from './conversations/conversations.module';
+import { OpenAIModule } from './openai/openai.module';
+import { UserModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [ConfigModule.forRoot()],
-  controllers: [ConversationsController],
-  providers: [OpenAIService, ConversationsService],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    MongooseModule.forRoot(process.env.DATABASE_URI),
+    ConversationsModule,
+    UserModule,
+    OpenAIModule,
+    AuthModule,
+  ],
 })
 export class AppModule {}

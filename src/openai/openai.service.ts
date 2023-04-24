@@ -1,8 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Configuration, OpenAIApi } from 'openai';
+import { Message } from 'src/conversations/schemas/message.schema';
 
-import { CODEGEN_PROMPT_INSTRUCTIONS } from './openai.contants';
+import {
+  CHAT_COMPLETION_BASE_CONFIG,
+  CHAT_SYSTEM_BASE_MESSAGE,
+} from './openai.constants';
 
 @Injectable()
 export class OpenAIService {
@@ -17,25 +21,26 @@ export class OpenAIService {
   }
 
   /**
-   * Generates code completion based on a given prompt.
-   * @param prompt - The prompt to generate code completion.
-   * @returns A Promise that resolves to the generated code completion.
+   * Generates a chat completion based on a given prompt and previous messages.
+   * @returns The generated chat completion.
    */
-  public async createCompletion(prompt: string): Promise<string> {
+  public async createChatCompletion(
+    prompt: string,
+    messages: Message[],
+  ): Promise<string> {
     try {
-      const result = await this.apiClient.createCompletion({
-        model: 'text-davinci-003',
-        prompt: this.generatePrompt(prompt),
-        temperature: 0,
-        max_tokens: 4000,
-        top_p: 1.0,
-        frequency_penalty: 0.0,
-        presence_penalty: 0.0,
+      const result = await this.apiClient.createChatCompletion({
+        ...CHAT_COMPLETION_BASE_CONFIG,
+        messages: [
+          { role: 'system', content: this.generateChatSystemMessage() },
+          ...messages,
+          { role: 'user', content: prompt },
+        ],
       });
 
-      const completion = result.data.choices[0].text;
+      const completion = result.data.choices[0].message?.content;
 
-      return this.sanitizeCompletion(completion);
+      return completion;
     } catch (error) {
       throw new HttpException(
         error.response.data.error.message,
@@ -45,28 +50,13 @@ export class OpenAIService {
   }
 
   /**
-   * Generates a prompt string by combining the instructions and the given prompt.
-   * @param prompt - The prompt to be added to the instructions.
-   * @returns A combined prompt string.
+   * Generates the base system message for a chat completion call.
    */
-  private generatePrompt(prompt: string): string {
-    return CODEGEN_PROMPT_INSTRUCTIONS + `\nThe purpose of: ${prompt}`;
-  }
-
-  /**
-   * Sanitizes the completion result by removing unwanted descriptions.
-   * @param completion - The completion result returned by the API.
-   * @returns A sanitized completion string.
-   */
-  private sanitizeCompletion(completion: string): string {
-    const separator = 'CODE:';
-
-    const index = completion.indexOf('CODE:');
-
-    if (index === -1) {
-      return completion; // If the keyword is not found, return the original string
-    }
-
-    return completion.substring(index + separator.length).trim(); // Remove everything before the keyword and trim the result
+  private generateChatSystemMessage(): string {
+    // TODO: Add Knowledge cutoff: ${knowledge_cutoff}
+    return (
+      CHAT_SYSTEM_BASE_MESSAGE +
+      `Current date: ${new Date().toLocaleString('en-US')}`
+    );
   }
 }
