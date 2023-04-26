@@ -4,7 +4,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { OpenAIModule } from 'src/openai/openai.module';
 import { UserModule } from 'src/users/users.module';
 
-// import { ConversationsController } from './conversations.controller';
 import { ConversationResolver } from './conversations.resolver';
 import { ConversationsService } from './conversations.service';
 import {
@@ -22,7 +21,6 @@ import { Message, MessageSchema } from './schemas/message.schema';
     OpenAIModule,
     UserModule,
   ],
-  // controllers: [ConversationsController],
   providers: [ConversationResolver, ConversationsService],
 })
 export class ConversationsModule {}

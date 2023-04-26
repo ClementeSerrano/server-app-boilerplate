@@ -7,6 +7,12 @@ type Auth {
   accessToken: String!
 }
 
+"""chat response"""
+type ChatResponse {
+  conversationId: ID!
+  response: String!
+}
+
 """conversation"""
 type Conversation {
   _id: ID!
@@ -38,6 +44,7 @@ type Message {
 
 type Mutation {
   anonymousLogin: Auth!
+  chat(conversationId: String, prompt: String!, userId: String!): ChatResponse!
   createUser(firstname: String, lastname: String, password: String, preferences: [String!], username: String): User!
 }
 

@@ -19,3 +19,12 @@ export class Conversation {
   @Field((type) => [Message])
   messages: Message[];
 }
+
+@ObjectType({ description: 'chat response' })
+export class ChatResponse {
+  @Field((type) => ID)
+  conversationId: string;
+
+  @Field((type) => String)
+  response: string;
+}
