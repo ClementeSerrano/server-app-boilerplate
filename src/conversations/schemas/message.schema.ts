@@ -5,7 +5,7 @@ import { ConversationUserRole } from '../conversations.types';
 
 export type MessageDocument = mongoose.HydratedDocument<Message>;
 
-@Schema()
+@Schema({ timestamps: true })
 export class Message {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,

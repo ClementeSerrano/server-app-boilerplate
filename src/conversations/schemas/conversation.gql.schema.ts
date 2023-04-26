@@ -13,6 +13,9 @@ export class Conversation {
   @Field()
   createdAt: Date;
 
+  @Field()
+  updatedAt: Date;
+
   @Field((type) => [Message])
   messages: Message[];
 }

@@ -3,7 +3,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 export type ConversationDocument = mongoose.HydratedDocument<Conversation>;
 
-@Schema()
+@Schema({ timestamps: true })
 export class Conversation {
   @Prop()
   title: string;

@@ -11,6 +11,9 @@ export class Message {
   @Field()
   createdAt: Date;
 
+  @Field()
+  updatedAt: Date;
+
   @Field((type) => String)
   content: string;
 }

@@ -17,6 +17,9 @@ export class User {
   @Field()
   createdAt: Date;
 
+  @Field()
+  updatedAt: Date;
+
   @Field((type) => [String], { nullable: true })
   preferences?: string[];
 }
