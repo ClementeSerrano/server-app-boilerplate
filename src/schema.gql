@@ -38,12 +38,13 @@ type Message {
 
 type Mutation {
   anonymousLogin: Auth!
+  createUser(firstname: String, lastname: String, password: String, preferences: [String!], username: String): User!
 }
 
 type Query {
   conversation(_id: String!): Conversation!
   conversations(title: String, userId: String): [Conversation!]!
-  user(_id: String!): User!
+  user(firstname: String, lastname: String, username: String): User!
   users: [User!]!
 }
 
