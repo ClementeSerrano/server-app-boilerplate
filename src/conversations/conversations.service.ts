@@ -2,32 +2,53 @@ import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
-import { OpenAIService } from '../openai/openai.service';
+import { OpenAIService } from 'src/openai/openai.service';
 import { UserService } from 'src/users/users.service';
-
 import {
   Conversation,
   ConversationDocument,
 } from './schemas/conversation.schema';
+import { Message, MessageDocument } from './schemas/message.schema';
 import { CreateConversationDto } from './dto/create-conversation.dto';
 import { BuildPromptDto } from './dto/build-prompt.dto';
 import { ChatDto } from './dto/chat.dto';
-import { ConversationUserRole } from './conversations.types';
+import { FindConversationsDto } from './dto/find-conversations.dto';
+import { CreateMessageDto } from './dto/create-message.dto';
 
 @Injectable()
 export class ConversationsService {
   constructor(
     @InjectModel(Conversation.name)
     private readonly conversationModel: Model<Conversation>,
+    @InjectModel(Message.name)
+    private readonly messageModel: Model<Message>,
     private openaiService: OpenAIService,
     private userService: UserService,
   ) {}
+
+  /**
+   * Retrieves all conversations from the database given a search criteria.
+   */
+  public async findAll(
+    findAllConversationsDto: FindConversationsDto,
+  ): Promise<ConversationDocument[]> {
+    return this.conversationModel.find(findAllConversationsDto).exec();
+  }
 
   /**
    * Retrieves a conversation from the database by its ID.
    */
   public async findById(_id: string): Promise<ConversationDocument | null> {
     return this.conversationModel.findById(_id).exec();
+  }
+
+  /**
+   * Retrieves all messages of a given conversation.
+   */
+  public async findMessages(
+    conversationId: string,
+  ): Promise<MessageDocument[]> {
+    return this.messageModel.find({ conversationId }).exec();
   }
 
   /**
@@ -41,6 +62,17 @@ export class ConversationsService {
     );
 
     return createdConversation.save();
+  }
+
+  /**
+   * Creates a new message for a an existing conversation, given the conversation ID, role (ConversationUserRole), and message content.
+   */
+  public async createMessage(
+    createMessageDto: CreateMessageDto,
+  ): Promise<Message> {
+    const createdMessage = new this.messageModel(createMessageDto);
+
+    return createdMessage.save();
   }
 
   /**
@@ -70,6 +102,8 @@ export class ConversationsService {
       chatDto.userId,
     );
 
+    const conversationMessages = await this.findMessages(conversationId);
+
     const prompt = this.buildPrompt({
       basePrompt: chatDto.prompt,
       userPreferences,
@@ -77,34 +111,18 @@ export class ConversationsService {
 
     const response = await this.openaiService.createChatCompletion(
       prompt,
-      conversation.messages,
+      conversationMessages,
     );
 
     // Save the user's message and the assistant's response to the conversation
-    await this.addMessageToConversation(conversationId, 'user', prompt);
-    await this.addMessageToConversation(conversationId, 'assistant', response);
+    await this.createMessage({ conversationId, role: 'user', content: prompt });
+    await this.createMessage({
+      conversationId,
+      role: 'assistant',
+      content: response,
+    });
 
     return { response, conversationId };
-  }
-
-  /**
-   * Adds a new message to an existing conversation, given the conversation ID, role (ConversationUserRole), and message content.
-   * @returns The updated conversation.
-   */
-  private async addMessageToConversation(
-    conversationId: string,
-    role: ConversationUserRole,
-    content: string,
-  ): Promise<Conversation> {
-    const conversation = await this.findById(conversationId);
-
-    if (!conversation) {
-      throw new Error('Conversation not found');
-    }
-
-    conversation.messages.push({ role, content });
-
-    return await conversation.save();
   }
 
   /**

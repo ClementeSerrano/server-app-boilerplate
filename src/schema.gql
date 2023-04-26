@@ -1,0 +1,67 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""auth"""
+type Auth {
+  accessToken: String!
+}
+
+"""chat response"""
+type ChatResponse {
+  conversationId: ID!
+  response: String!
+}
+
+"""conversation"""
+type Conversation {
+  _id: ID!
+  createdAt: DateTime!
+  messages: [Message!]!
+  updatedAt: DateTime!
+  user: User!
+}
+
+enum ConversationUserRole {
+  assistant
+  system
+  user
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+"""message"""
+type Message {
+  _id: ID!
+  content: String!
+  createdAt: DateTime!
+  role: ConversationUserRole!
+  updatedAt: DateTime!
+}
+
+type Mutation {
+  anonymousLogin: Auth!
+  chat(conversationId: String, prompt: String!, userId: String!): ChatResponse!
+  createUser(firstname: String, lastname: String, password: String, preferences: [String!], username: String): User!
+}
+
+type Query {
+  conversation(_id: String!): Conversation!
+  conversations(title: String, userId: String): [Conversation!]!
+  user(firstname: String, lastname: String, username: String): User!
+  users: [User!]!
+}
+
+"""user """
+type User {
+  _id: ID!
+  createdAt: DateTime!
+  firstname: String
+  lastname: String
+  preferences: [String!]
+  updatedAt: DateTime!
+  username: String
+}

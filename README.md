@@ -74,6 +74,14 @@ docker-compose --profile dev up
 
 The app will be accessible at http://localhost:3000.
 
+When installing new dependencies, the app needs to be restarted by running:
+
+```bash
+docker-compose --profile dev up --build -V
+```
+
+With this, all the new added deps are included in the build of the new image of the app (we ensure `yarn install` is being run).
+
 ### Production
 
 Run the production environment using Docker Compose:
