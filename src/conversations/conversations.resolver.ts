@@ -1,11 +1,12 @@
 import { Args, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+
 import { ConversationsService } from './conversations.service';
 import { Conversation } from './schemas/conversation.gql.schema';
 import { Message } from './schemas/message.schema';
 
 @Resolver((of) => Conversation)
 export class ConversationResolver {
-  constructor(private conversationService: ConversationsService) {}
+  constructor(private readonly conversationService: ConversationsService) {}
 
   @Query((returns) => Conversation)
   public async conversation(@Args('_id', { type: () => String }) _id: string) {
