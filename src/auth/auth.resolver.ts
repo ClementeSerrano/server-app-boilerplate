@@ -10,7 +10,7 @@ export class AuthResolver {
 
   @Public()
   @Mutation((returns) => Auth)
-  public async anonymousLogin() {
-    return this.authService.anonymousLogin();
+  public async anonymousRegister() {
+    return this.authService.anonymousRegister();
   }
 }

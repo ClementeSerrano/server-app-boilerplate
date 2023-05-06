@@ -1,12 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { UserService } from 'src/users/users.service';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(
+    private userService: UserService,
+    private readonly jwtService: JwtService,
+  ) {}
 
-  public async anonymousLogin(): Promise<{ accessToken: string }> {
-    const payload = { isAnonymous: true };
+  public async anonymousRegister(): Promise<{ accessToken: string }> {
+    const newUser = await this.userService.create();
+
+    const userId = newUser._id.toString();
+
+    const payload = { sub: userId, isAnonymous: true };
 
     return {
       accessToken: await this.jwtService.signAsync(payload),

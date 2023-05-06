@@ -43,7 +43,7 @@ type Message {
 }
 
 type Mutation {
-  anonymousLogin: Auth!
+  anonymousRegister: Auth!
   chat(conversationId: String, prompt: String!, userId: String!): ChatResponse!
   createUser(firstname: String, lastname: String, password: String, preferences: [String!], username: String): User!
 }
