@@ -7,6 +7,12 @@ type Auth {
   accessToken: String!
 }
 
+"""auth-profile"""
+type AuthProfile {
+  isAnonymous: Boolean!
+  sub: String!
+}
+
 """chat response"""
 type ChatResponse {
   conversationId: ID!
@@ -51,6 +57,7 @@ type Mutation {
 type Query {
   conversation(_id: String!): Conversation!
   conversations(title: String, userId: String): [Conversation!]!
+  profile: AuthProfile!
   user(firstname: String, lastname: String, username: String): User!
   users: [User!]!
 }

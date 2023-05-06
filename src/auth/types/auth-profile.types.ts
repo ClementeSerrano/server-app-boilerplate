@@ -1,4 +1,4 @@
 export class AuthProfile {
-  isAnonymous: boolean;
   sub: string;
+  isAnonymous: boolean;
 }
