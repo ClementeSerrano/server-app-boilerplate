@@ -31,7 +31,7 @@ export class UserService {
     return user?.preferences || null;
   }
 
-  public async create(createUserDto?: CreateUserDto): Promise<UserDocument> {
+  public async create(createUserDto: CreateUserDto): Promise<UserDocument> {
     let fields = createUserDto;
 
     if (createUserDto?.password) {

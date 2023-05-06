@@ -21,6 +21,6 @@ export class UsersResolver {
 
   @Mutation((returns) => User)
   public async createUser(@Args() args: CreateUserArgs) {
-    return this.userService.create(args);
+    return this.userService.create({ ...args, isAnonymous: false });
   }
 }

@@ -5,8 +5,8 @@ export class User {
   @Field((type) => ID)
   _id: string;
 
-  @Field({ nullable: true })
-  username?: string;
+  @Field()
+  username: string;
 
   @Field({ nullable: true })
   firstname?: string;
@@ -22,4 +22,7 @@ export class User {
 
   @Field((type) => [String], { nullable: true })
   preferences?: string[];
+
+  @Field((type) => Boolean)
+  isAnonymous: boolean;
 }

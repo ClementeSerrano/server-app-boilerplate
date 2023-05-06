@@ -4,19 +4,16 @@ import { Field, ArgsType } from '@nestjs/graphql';
 import { User } from '../schemas/users.schema';
 
 export class CreateUserDto extends PartialType(
-  PickType(User, [
-    'username',
-    'password',
-    'firstname',
-    'lastname',
-    'preferences',
-  ]),
-) {}
+  PickType(User, ['password', 'firstname', 'lastname', 'preferences']),
+) {
+  username: string;
+  isAnonymous: boolean;
+}
 
 @ArgsType()
 export class CreateUserArgs {
-  @Field({ nullable: true })
-  username?: string;
+  @Field()
+  username: string;
 
   @Field({ nullable: true })
   password?: string;
