@@ -1,5 +1,15 @@
 import { Field, ID, ObjectType, registerEnumType } from '@nestjs/graphql';
 
+enum ConversationUserRole {
+  'system' = 'system',
+  'user' = 'user',
+  'assistant' = 'assistant',
+}
+
+registerEnumType(ConversationUserRole, {
+  name: 'ConversationUserRole',
+});
+
 @ObjectType({ description: 'message' })
 export class Message {
   @Field((type) => ID)
@@ -17,13 +27,3 @@ export class Message {
   @Field((type) => String)
   content: string;
 }
-
-enum ConversationUserRole {
-  'system',
-  'user',
-  'assistant',
-}
-
-registerEnumType(ConversationUserRole, {
-  name: 'ConversationUserRole',
-});

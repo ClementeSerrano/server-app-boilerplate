@@ -9,12 +9,19 @@ import {
 
 import { ConversationsService } from './conversations.service';
 import { ChatArgs } from './dto/chat.dto';
-import { ChatResponse, Conversation } from './schemas/conversation.gql.schema';
-import { Message } from './schemas/message.schema';
+import { ChatResponse } from './schemas/conversation.gql.schema';
+import { User } from 'src/users/schemas/users.gql.schema';
+import { Message } from './schemas/message.gql.schema';
+import { Conversation } from './schemas/conversation.gql.schema';
+import { Conversation as ConversationDBSchema } from './schemas/conversation.schema';
+import { UserService } from 'src/users/users.service';
 
 @Resolver((of) => Conversation)
 export class ConversationResolver {
-  constructor(private readonly conversationService: ConversationsService) {}
+  constructor(
+    private readonly conversationService: ConversationsService,
+    private readonly userService: UserService,
+  ) {}
 
   @Query((returns) => Conversation)
   public async conversation(@Args('_id', { type: () => String }) _id: string) {
@@ -37,5 +44,10 @@ export class ConversationResolver {
   @ResolveField('messages', (returns) => [Message])
   public async messages(@Parent() conversation: Conversation) {
     return this.conversationService.findMessages(conversation._id);
+  }
+
+  @ResolveField('user', (returns) => [User])
+  public async user(@Parent() conversation: ConversationDBSchema) {
+    return this.userService.findById(conversation.userId);
   }
 }
