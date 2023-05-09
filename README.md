@@ -69,12 +69,24 @@ Remember to replace the dummy values with real values for each variable.
 Run the development environment using Docker Compose:
 
 ```bash
+yarn docker:dev
+```
+
+or:
+
+```bash
 docker-compose --profile dev up
 ```
 
 The app will be accessible at http://localhost:3000.
 
 When installing new dependencies, the app needs to be restarted by running:
+
+```bash
+yarn docker:dev
+```
+
+or:
 
 ```bash
 docker-compose --profile dev up --build -V
@@ -85,6 +97,12 @@ With this, all the new added deps are included in the build of the new image of 
 ### Production
 
 Run the production environment using Docker Compose:
+
+```bash
+yarn docker:prod
+```
+
+or:
 
 ```bash
 docker-compose --profile prod up
