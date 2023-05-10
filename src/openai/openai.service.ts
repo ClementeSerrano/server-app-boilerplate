@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Configuration, OpenAIApi } from 'openai';
+import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from 'openai';
 import { Message } from 'src/conversations/schemas/message.schema';
 
 import {
@@ -26,9 +26,20 @@ export class OpenAIService {
    */
   public async createChatCompletion(
     prompt: string,
-    messages: Message[],
+    messages: ChatCompletionRequestMessage[],
   ): Promise<string> {
     try {
+      console.log(
+        JSON.stringify({
+          ...CHAT_COMPLETION_BASE_CONFIG,
+          messages: [
+            { role: 'system', content: this.generateChatSystemMessage() },
+            ...messages,
+            { role: 'user', content: prompt },
+          ],
+        }),
+      );
+
       const result = await this.apiClient.createChatCompletion({
         ...CHAT_COMPLETION_BASE_CONFIG,
         messages: [
@@ -56,7 +67,7 @@ export class OpenAIService {
     // TODO: Add Knowledge cutoff: ${knowledge_cutoff}
     return (
       CHAT_SYSTEM_BASE_MESSAGE +
-      `Current date: ${new Date().toLocaleString('en-US')}`
+      ` Current date: ${new Date().toLocaleString('en-US')}`
     );
   }
 }

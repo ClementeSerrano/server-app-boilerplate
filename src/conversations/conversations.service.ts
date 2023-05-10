@@ -1,6 +1,7 @@
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { ChatCompletionRequestMessage } from 'openai';
 
 import { OpenAIService } from 'src/openai/openai.service';
 import { UserService } from 'src/users/users.service';
@@ -10,7 +11,7 @@ import {
 } from './schemas/conversation.schema';
 import { Message, MessageDocument } from './schemas/message.schema';
 import { CreateConversationDto } from './dto/create-conversation.dto';
-import { BuildPromptDto } from './dto/build-prompt.dto';
+import { PrepareMessagesDto } from './dto/prepare-messages.dto';
 import { ChatDto } from './dto/chat.dto';
 import { FindConversationsDto } from './dto/find-conversations.dto';
 import { CreateMessageDto } from './dto/create-message.dto';
@@ -83,11 +84,13 @@ export class ConversationsService {
   public async chat(
     chatDto: ChatDto,
   ): Promise<{ response: string; conversationId: string }> {
+    const prompt = chatDto.prompt;
+    const userId = chatDto.userId;
     let conversationId = chatDto.conversationId;
 
     // Create a new conversation if no conversationId is provided
     if (!conversationId) {
-      const newConversation = await this.create({ userId: chatDto.userId });
+      const newConversation = await this.create({ userId });
 
       conversationId = newConversation._id.toString();
     }
@@ -98,20 +101,17 @@ export class ConversationsService {
       throw new Error('Conversation not found');
     }
 
-    const userPreferences = await this.userService.findPreferences(
-      chatDto.userId,
-    );
-
+    const userPreferences = await this.userService.findPreferences(userId);
     const conversationMessages = await this.findMessages(conversationId);
 
-    const prompt = this.buildPrompt({
-      basePrompt: chatDto.prompt,
+    const messages = this.prepareMessages({
+      conversationMessages,
       userPreferences,
     });
 
     const response = await this.openaiService.createChatCompletion(
       prompt,
-      conversationMessages,
+      messages,
     );
 
     // Save the user's message and the assistant's response to the conversation
@@ -126,19 +126,36 @@ export class ConversationsService {
   }
 
   /**
-   * Builds a prompt by combining the user preferences and the base prompt.
+   * Prepares the messages to be send for a chat completion based on the user preferences and
+   * previous messages in the conversation.
    */
-  private buildPrompt(buildPromptDto: BuildPromptDto): string {
-    const { basePrompt, userPreferences } = buildPromptDto;
+  private prepareMessages(
+    prepareMessagesDto: PrepareMessagesDto,
+  ): ChatCompletionRequestMessage[] {
+    const { userPreferences, conversationMessages } = prepareMessagesDto;
 
-    let prompt = '';
+    let messages: ChatCompletionRequestMessage[] = [];
 
     if (userPreferences && userPreferences.length > 0) {
-      prompt += `My preferences are ${userPreferences.join(', ')}.`;
+      messages = [
+        ...messages,
+        {
+          role: 'user',
+          content: `My preferences are ${userPreferences.join(', ')}.`,
+        },
+      ];
     }
 
-    prompt += ` ${basePrompt}`;
+    if (conversationMessages.length > 0) {
+      messages = [
+        ...messages,
+        ...conversationMessages.map((message) => ({
+          role: message.role,
+          content: message.content,
+        })),
+      ];
+    }
 
-    return prompt;
+    return messages;
   }
 }
