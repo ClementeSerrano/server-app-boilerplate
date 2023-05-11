@@ -26,8 +26,6 @@ services:
       - NODE_ENV=production
     ports:
       - 3001:${PORT}
-    depends_on:
-      - mongodb
     profiles:
       - prod
 
@@ -40,7 +38,6 @@ services:
       - mongodb_data:/data/db
     profiles:
       - dev
-      - prod
 
 volumes:
   mongodb_data:
