@@ -34,17 +34,6 @@ export class OpenAIService {
     messages: ChatCompletionRequestMessage[],
   ): Promise<string> {
     try {
-      console.log(
-        JSON.stringify({
-          ...CHAT_COMPLETION_BASE_CONFIG,
-          messages: [
-            { role: 'system', content: this.generateChatSystemMessage() },
-            ...messages,
-            { role: 'user', content: prompt },
-          ],
-        }),
-      );
-
       const result = await this.apiClient.createChatCompletion({
         ...CHAT_COMPLETION_BASE_CONFIG,
         model: this.model,
