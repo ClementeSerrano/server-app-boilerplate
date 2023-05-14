@@ -1,7 +1,6 @@
 import { ChatCompletionBaseConfig } from './openai.types';
 
 export const CHAT_COMPLETION_BASE_CONFIG: ChatCompletionBaseConfig = {
-  model: 'gpt-3.5-turbo',
   temperature: 0.5,
   max_tokens: 500,
   top_p: 0.5,

@@ -1,21 +1,26 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from 'openai';
-import { Message } from 'src/conversations/schemas/message.schema';
 
 import {
   CHAT_COMPLETION_BASE_CONFIG,
   CHAT_SYSTEM_BASE_MESSAGE,
 } from './openai.constants';
+import { ChatCompletionModel } from './openai.types';
 
 @Injectable()
 export class OpenAIService {
   private apiClient: OpenAIApi;
+  private model: ChatCompletionModel;
 
   constructor(private configService: ConfigService) {
     const config = new Configuration({
       apiKey: this.configService.get<string>('OPENAI_API_KEY'),
     });
+
+    this.model = this.configService.get<ChatCompletionModel>(
+      'OPENAI_CHAT_COMPLETION_MODEL',
+    );
 
     this.apiClient = new OpenAIApi(config);
   }
@@ -42,6 +47,7 @@ export class OpenAIService {
 
       const result = await this.apiClient.createChatCompletion({
         ...CHAT_COMPLETION_BASE_CONFIG,
+        model: this.model,
         messages: [
           { role: 'system', content: this.generateChatSystemMessage() },
           ...messages,
