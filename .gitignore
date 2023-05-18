@@ -1,9 +1,9 @@
 # screts
 .env
 .env.local
-.env.development
+.env.dev
 .env.test.local
-.env.production
+.env.prod
 
 # compiled outputs
 /dist
