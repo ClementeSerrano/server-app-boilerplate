@@ -1,14 +1,5 @@
 import { ArgsType, Field } from '@nestjs/graphql';
-
-import { Location } from 'src/location/location.types';
-import { LocationInput } from 'src/location/schemas/location-input.gql.schema';
-
-export class ChatDto {
-  userId: string;
-  conversationId?: string;
-  prompt: string;
-  location?: Location;
-}
+import { LocationInput } from 'src/location/dtos/inputs/location.input';
 
 @ArgsType()
 export class ChatArgs {

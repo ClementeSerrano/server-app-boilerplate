@@ -8,13 +8,13 @@ import {
 } from '@nestjs/graphql';
 
 import { ConversationsService } from './conversations.service';
-import { ChatArgs } from './dto/chat.dto';
-import { ChatResponse } from './schemas/conversation.gql.schema';
-import { User } from 'src/users/schemas/users.gql.schema';
-import { Message } from './schemas/message.gql.schema';
-import { Conversation } from './schemas/conversation.gql.schema';
+import { User } from 'src/users/dto/object-types/user.object-type';
+import { Message } from './dtos/object-types/message.object-type';
+import { Conversation } from './dtos/object-types/conversation.object-type';
 import { Conversation as ConversationDBSchema } from './schemas/conversation.schema';
 import { UserService } from 'src/users/users.service';
+import { ChatArgs } from './dtos/args/chat.args';
+import { ChatResponse } from './dtos/object-types/chat.object-type';
 
 @Resolver(() => Conversation)
 export class ConversationResolver {

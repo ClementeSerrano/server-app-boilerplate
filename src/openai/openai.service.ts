@@ -6,7 +6,7 @@ import {
   CHAT_COMPLETION_BASE_CONFIG,
   CHAT_SYSTEM_BASE_MESSAGE,
 } from './openai.constants';
-import { ChatCompletionModel } from './openai.types';
+import { ChatCompletionModel } from './interfaces/openai.interfaces';
 
 @Injectable()
 export class OpenAIService {

@@ -13,13 +13,13 @@ type AuthProfile {
   sub: String!
 }
 
-"""chat response"""
+"""Chat response object type."""
 type ChatResponse {
   conversationId: ID!
   response: String!
 }
 
-"""conversation"""
+"""Conversation object type."""
 type Conversation {
   _id: ID!
   createdAt: DateTime!
@@ -45,7 +45,7 @@ input LocationInput {
   longitude: Float!
 }
 
-"""message"""
+"""Message object type."""
 type Message {
   _id: ID!
   content: String!
@@ -68,7 +68,7 @@ type Query {
   users: [User!]!
 }
 
-"""user """
+"""User object type."""
 type User {
   _id: ID!
   createdAt: DateTime!

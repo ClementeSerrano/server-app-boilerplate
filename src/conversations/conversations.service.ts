@@ -10,11 +10,11 @@ import {
   ConversationDocument,
 } from './schemas/conversation.schema';
 import { Message, MessageDocument } from './schemas/message.schema';
-import { CreateConversationDto } from './dto/create-conversation.dto';
-import { PrepareMessagesDto } from './dto/prepare-messages.dto';
-import { ChatDto } from './dto/chat.dto';
-import { FindConversationsDto } from './dto/find-conversations.dto';
-import { CreateMessageDto } from './dto/create-message.dto';
+import { CreateConversationDto } from './dtos/create-conversation.dto';
+import { PrepareMessagesDto } from './dtos/prepare-messages.dto';
+import { ChatDto } from './dtos/chat.dto';
+import { FindConversationsDto } from './dtos/find-conversations.dto';
+import { CreateMessageDto } from './dtos/create-message.dto';
 
 @Injectable()
 export class ConversationsService {

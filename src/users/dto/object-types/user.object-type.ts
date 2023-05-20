@@ -1,8 +1,8 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 
-@ObjectType({ description: 'user ' })
+@ObjectType({ description: 'User object type.' })
 export class User {
-  @Field((type) => ID)
+  @Field(() => ID)
   _id: string;
 
   @Field()
@@ -20,9 +20,9 @@ export class User {
   @Field()
   updatedAt: Date;
 
-  @Field((type) => [String], { nullable: true })
+  @Field(() => [String], { nullable: true })
   preferences?: string[];
 
-  @Field((type) => Boolean)
+  @Field(() => Boolean)
   isAnonymous: boolean;
 }

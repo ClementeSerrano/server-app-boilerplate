@@ -2,9 +2,9 @@ import { Context, Query, Mutation, Resolver } from '@nestjs/graphql';
 
 import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
-import { Auth } from './schemas/auth.gql.schema';
-import { AuthProfile } from './schemas/auth-profile.gql.schema';
-import { AuthContext } from './types/auth-context.types';
+import { Auth } from './dtos/object-types/auth.object-type';
+import { AuthProfile } from './dtos/object-types/auth-profile.object-type';
+import { AuthContext } from './interfaces/auth-context.interface';
 
 @Resolver((of) => Auth)
 export class AuthResolver {

@@ -1,4 +1,4 @@
-import { ChatCompletionBaseConfig } from './openai.types';
+import { ChatCompletionBaseConfig } from './interfaces/openai.interfaces';
 
 export const CHAT_COMPLETION_BASE_CONFIG: ChatCompletionBaseConfig = {
   temperature: 0.5,
