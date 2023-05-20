@@ -103,10 +103,12 @@ export class ConversationsService {
 
     const userPreferences = await this.userService.findPreferences(userId);
     const conversationMessages = await this.findMessages(conversationId);
+    const userLocation = chatDto.location;
 
     const messages = this.prepareMessages({
       conversationMessages,
       userPreferences,
+      userLocation,
     });
 
     const response = await this.openaiService.createChatCompletion(
@@ -132,16 +134,26 @@ export class ConversationsService {
   private prepareMessages(
     prepareMessagesDto: PrepareMessagesDto,
   ): ChatCompletionRequestMessage[] {
-    const { userPreferences, conversationMessages } = prepareMessagesDto;
+    const { userPreferences, conversationMessages, userLocation } =
+      prepareMessagesDto;
 
     let messages: ChatCompletionRequestMessage[] = [];
 
     if (userPreferences && userPreferences.length > 0) {
       messages = [
-        ...messages,
         {
           role: 'user',
           content: `My preferences are ${userPreferences.join(', ')}.`,
+        },
+      ];
+    }
+
+    if (userLocation) {
+      messages = [
+        ...messages,
+        {
+          role: 'user',
+          content: `My location is: latitude: ${userLocation.latitude}, longitude: ${userLocation.longitude} and altitude: ${userLocation.altitude}.`,
         },
       ];
     }
