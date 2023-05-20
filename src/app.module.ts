@@ -10,6 +10,7 @@ import { ConversationsModule } from './conversations/conversations.module';
 import { OpenAIModule } from './openai/openai.module';
 import { UserModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { LocationModule } from './location/location.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { AuthModule } from './auth/auth.module';
     UserModule,
     OpenAIModule,
     AuthModule,
+    LocationModule,
   ],
 })
 export class AppModule {}

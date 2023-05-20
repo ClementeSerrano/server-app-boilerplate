@@ -15,6 +15,7 @@ import { PrepareMessagesDto } from './dtos/prepare-messages.dto';
 import { ChatDto } from './dtos/chat.dto';
 import { FindConversationsDto } from './dtos/find-conversations.dto';
 import { CreateMessageDto } from './dtos/create-message.dto';
+import { LocationService } from 'src/location/location.service';
 
 @Injectable()
 export class ConversationsService {
@@ -23,8 +24,10 @@ export class ConversationsService {
     private readonly conversationModel: Model<Conversation>,
     @InjectModel(Message.name)
     private readonly messageModel: Model<Message>,
+
     private openaiService: OpenAIService,
     private userService: UserService,
+    private locationService: LocationService,
   ) {}
 
   /**
@@ -103,12 +106,19 @@ export class ConversationsService {
 
     const userPreferences = await this.userService.findPreferences(userId);
     const conversationMessages = await this.findMessages(conversationId);
-    const userLocation = chatDto.location;
+    let locationContext;
+
+    if (chatDto.location) {
+      locationContext = await this.locationService.getLocationContext({
+        latitude: chatDto.location.latitude,
+        longitude: chatDto.location.longitude,
+      });
+    }
 
     const messages = this.prepareMessages({
       conversationMessages,
       userPreferences,
-      userLocation,
+      locationContext,
     });
 
     const response = await this.openaiService.createChatCompletion(
@@ -134,7 +144,7 @@ export class ConversationsService {
   private prepareMessages(
     prepareMessagesDto: PrepareMessagesDto,
   ): ChatCompletionRequestMessage[] {
-    const { userPreferences, conversationMessages, userLocation } =
+    const { userPreferences, conversationMessages, locationContext } =
       prepareMessagesDto;
 
     let messages: ChatCompletionRequestMessage[] = [];
@@ -148,12 +158,20 @@ export class ConversationsService {
       ];
     }
 
-    if (userLocation) {
+    if (locationContext) {
       messages = [
         ...messages,
         {
           role: 'user',
-          content: `My location is: latitude: ${userLocation.latitude}, longitude: ${userLocation.longitude} and altitude: ${userLocation.altitude}.`,
+          content: `I am located in: ${locationContext.street} ${locationContext.houseNumber}, ${locationContext.suburb}, ${locationContext.city}, ${locationContext.country}`,
+        },
+        {
+          role: 'user',
+          content: `My local time is: ${locationContext.localTime}`,
+        },
+        {
+          role: 'user',
+          content: `The weather conditions are:\n - Main description: ${locationContext.weather.description}.\n - Current temperature: ${locationContext.weather.temp} Celsius (feels like ${locationContext.weather.tempFeelsLike}).\n - Max temperature of the day: ${locationContext.weather.tempMax} Celsius.\n - Min temperature of the day: ${locationContext.weather.tempMin} Celsius.\n - Cloudiness: ${locationContext.weather.cloudiness}%.\n - Wind speed: ${locationContext.weather.windSpeed} meters/second.`,
         },
       ];
     }

@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { LocationModule } from 'src/location/location.module';
 
 import { OpenAIModule } from 'src/openai/openai.module';
 import { UserModule } from 'src/users/users.module';
@@ -20,6 +21,7 @@ import { Message, MessageSchema } from './schemas/message.schema';
     ]),
     OpenAIModule,
     UserModule,
+    LocationModule,
   ],
   providers: [ConversationResolver, ConversationsService],
 })

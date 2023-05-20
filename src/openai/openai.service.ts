@@ -38,7 +38,7 @@ export class OpenAIService {
         ...CHAT_COMPLETION_BASE_CONFIG,
         model: this.model,
         messages: [
-          { role: 'system', content: this.generateChatSystemMessage() },
+          { role: 'system', content: CHAT_SYSTEM_BASE_MESSAGE },
           ...messages,
           { role: 'user', content: prompt },
         ],
@@ -53,16 +53,5 @@ export class OpenAIService {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
-  }
-
-  /**
-   * Generates the base system message for a chat completion call.
-   */
-  private generateChatSystemMessage(): string {
-    // TODO: Add Knowledge cutoff: ${knowledge_cutoff}
-    return (
-      CHAT_SYSTEM_BASE_MESSAGE +
-      ` Current date: ${new Date().toLocaleString('en-US')}`
-    );
   }
 }

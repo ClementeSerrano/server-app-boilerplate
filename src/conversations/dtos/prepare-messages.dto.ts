@@ -1,8 +1,8 @@
 import { Message } from '../schemas/message.schema';
-import { Location } from 'src/location/interfaces/location.interface';
+import { LocationContext } from 'src/location/interfaces/location-context.interface';
 
 export class PrepareMessagesDto {
   conversationMessages: Message[] | null;
   userPreferences: string[];
-  userLocation?: Location;
+  locationContext?: LocationContext;
 }
