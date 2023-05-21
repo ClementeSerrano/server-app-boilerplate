@@ -1,7 +1,7 @@
 import { PartialType, PickType } from '@nestjs/mapped-types';
 import { Field, ArgsType } from '@nestjs/graphql';
 
-import { User } from '../schemas/users.schema';
+import { User } from '../schemas/user.schema';
 
 export class CreateUserDto extends PartialType(
   PickType(User, ['password', 'firstname', 'lastname', 'preferences']),

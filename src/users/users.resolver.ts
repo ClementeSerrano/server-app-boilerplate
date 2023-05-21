@@ -1,6 +1,6 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 
-import { User } from './schemas/users.gql.schema';
+import { User } from './dto/object-types/user.object-type';
 import { UserService } from './users.service';
 import { FindUserArgs } from './dto/find-user.dto';
 import { CreateUserArgs } from './dto/create-user.dto';

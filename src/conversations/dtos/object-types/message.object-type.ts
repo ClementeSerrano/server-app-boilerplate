@@ -10,12 +10,12 @@ registerEnumType(ConversationUserRole, {
   name: 'ConversationUserRole',
 });
 
-@ObjectType({ description: 'message' })
+@ObjectType({ description: 'Message object type.' })
 export class Message {
-  @Field((type) => ID)
+  @Field(() => ID)
   _id: string;
 
-  @Field((type) => ConversationUserRole)
+  @Field(() => ConversationUserRole)
   role: ConversationUserRole;
 
   @Field()
@@ -24,6 +24,6 @@ export class Message {
   @Field()
   updatedAt: Date;
 
-  @Field((type) => String)
+  @Field(() => String)
   content: string;
 }

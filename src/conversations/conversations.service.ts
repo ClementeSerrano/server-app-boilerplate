@@ -10,11 +10,12 @@ import {
   ConversationDocument,
 } from './schemas/conversation.schema';
 import { Message, MessageDocument } from './schemas/message.schema';
-import { CreateConversationDto } from './dto/create-conversation.dto';
-import { PrepareMessagesDto } from './dto/prepare-messages.dto';
-import { ChatDto } from './dto/chat.dto';
-import { FindConversationsDto } from './dto/find-conversations.dto';
-import { CreateMessageDto } from './dto/create-message.dto';
+import { CreateConversationDto } from './dtos/create-conversation.dto';
+import { PrepareMessagesDto } from './dtos/prepare-messages.dto';
+import { ChatDto } from './dtos/chat.dto';
+import { FindConversationsDto } from './dtos/find-conversations.dto';
+import { CreateMessageDto } from './dtos/create-message.dto';
+import { LocationService } from 'src/location/location.service';
 
 @Injectable()
 export class ConversationsService {
@@ -23,8 +24,10 @@ export class ConversationsService {
     private readonly conversationModel: Model<Conversation>,
     @InjectModel(Message.name)
     private readonly messageModel: Model<Message>,
+
     private openaiService: OpenAIService,
     private userService: UserService,
+    private locationService: LocationService,
   ) {}
 
   /**
@@ -103,10 +106,19 @@ export class ConversationsService {
 
     const userPreferences = await this.userService.findPreferences(userId);
     const conversationMessages = await this.findMessages(conversationId);
+    let locationContext;
+
+    if (chatDto.location) {
+      locationContext = await this.locationService.getLocationContext({
+        latitude: chatDto.location.latitude,
+        longitude: chatDto.location.longitude,
+      });
+    }
 
     const messages = this.prepareMessages({
       conversationMessages,
       userPreferences,
+      locationContext,
     });
 
     const response = await this.openaiService.createChatCompletion(
@@ -132,16 +144,34 @@ export class ConversationsService {
   private prepareMessages(
     prepareMessagesDto: PrepareMessagesDto,
   ): ChatCompletionRequestMessage[] {
-    const { userPreferences, conversationMessages } = prepareMessagesDto;
+    const { userPreferences, conversationMessages, locationContext } =
+      prepareMessagesDto;
 
     let messages: ChatCompletionRequestMessage[] = [];
 
     if (userPreferences && userPreferences.length > 0) {
       messages = [
-        ...messages,
         {
           role: 'user',
           content: `My preferences are ${userPreferences.join(', ')}.`,
+        },
+      ];
+    }
+
+    if (locationContext) {
+      messages = [
+        ...messages,
+        {
+          role: 'user',
+          content: `I am located in: ${locationContext.street} ${locationContext.houseNumber}, ${locationContext.suburb}, ${locationContext.city}, ${locationContext.country}`,
+        },
+        {
+          role: 'user',
+          content: `My local time is: ${locationContext.localTime}`,
+        },
+        {
+          role: 'user',
+          content: `The weather conditions are:\n - Main description: ${locationContext.weather.description}.\n - Current temperature: ${locationContext.weather.temp} Celsius (feels like ${locationContext.weather.tempFeelsLike}).\n - Max temperature of the day: ${locationContext.weather.tempMax} Celsius.\n - Min temperature of the day: ${locationContext.weather.tempMin} Celsius.\n - Cloudiness: ${locationContext.weather.cloudiness}%.\n - Wind speed: ${locationContext.weather.windSpeed} meters/second.`,
         },
       ];
     }

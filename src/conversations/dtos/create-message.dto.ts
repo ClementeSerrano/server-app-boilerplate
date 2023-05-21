@@ -1,4 +1,4 @@
-import { ConversationUserRole } from '../conversations.types';
+import { ConversationUserRole } from '../interfaces/conversations.interfaces';
 
 export class CreateMessageDto {
   conversationId: string;

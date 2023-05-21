@@ -13,13 +13,13 @@ type AuthProfile {
   sub: String!
 }
 
-"""chat response"""
+"""Chat response object type."""
 type ChatResponse {
   conversationId: ID!
   response: String!
 }
 
-"""conversation"""
+"""Conversation object type."""
 type Conversation {
   _id: ID!
   createdAt: DateTime!
@@ -39,7 +39,13 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-"""message"""
+input LocationInput {
+  altitude: Float
+  latitude: Float!
+  longitude: Float!
+}
+
+"""Message object type."""
 type Message {
   _id: ID!
   content: String!
@@ -50,7 +56,7 @@ type Message {
 
 type Mutation {
   anonymousRegister: Auth!
-  chat(conversationId: String, prompt: String!, userId: String!): ChatResponse!
+  chat(conversationId: String, location: LocationInput, prompt: String!, userId: String!): ChatResponse!
   createUser(firstname: String, lastname: String, password: String, preferences: [String!], username: String!): User!
 }
 
@@ -62,7 +68,7 @@ type Query {
   users: [User!]!
 }
 
-"""user """
+"""User object type."""
 type User {
   _id: ID!
   createdAt: DateTime!
