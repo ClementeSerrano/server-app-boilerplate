@@ -97,7 +97,7 @@ export class LocationService {
         catchError((error: AxiosError) => {
           // this.logger.error(error.response.data);
           throw `Error fetching the weather conditions for latitude: ${latitude}, longitude: ${longitude}. Error: ${JSON.stringify(
-            error.response.data,
+            error.response?.data,
           )}.`;
         }),
       ),
@@ -122,7 +122,7 @@ export class LocationService {
         catchError((error: AxiosError) => {
           // this.logger.error(error.response.data);
           throw `Error fetching local time info for timezone: ${timezone}. Error: ${JSON.stringify(
-            error.response.data,
+            error.response?.data,
           )}.`;
         }),
       ),

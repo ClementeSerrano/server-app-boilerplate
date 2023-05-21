@@ -149,6 +149,16 @@ export class ConversationsService {
 
     let messages: ChatCompletionRequestMessage[] = [];
 
+    if (conversationMessages.length > 0) {
+      messages = [
+        ...messages,
+        ...conversationMessages.map((message) => ({
+          role: message.role,
+          content: message.content,
+        })),
+      ];
+    }
+
     if (userPreferences && userPreferences.length > 0) {
       messages = [
         {
@@ -173,16 +183,6 @@ export class ConversationsService {
           role: 'user',
           content: `The weather conditions are:\n - Main description: ${locationContext.weather.description}.\n - Current temperature: ${locationContext.weather.temp} Celsius (feels like ${locationContext.weather.tempFeelsLike}).\n - Max temperature of the day: ${locationContext.weather.tempMax} Celsius.\n - Min temperature of the day: ${locationContext.weather.tempMin} Celsius.\n - Cloudiness: ${locationContext.weather.cloudiness}%.\n - Wind speed: ${locationContext.weather.windSpeed} meters/second.`,
         },
-      ];
-    }
-
-    if (conversationMessages.length > 0) {
-      messages = [
-        ...messages,
-        ...conversationMessages.map((message) => ({
-          role: message.role,
-          content: message.content,
-        })),
       ];
     }
 
