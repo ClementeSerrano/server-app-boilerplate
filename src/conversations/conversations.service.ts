@@ -178,8 +178,6 @@ export class ConversationsService {
       locationContext,
     });
 
-    console.log({ messages });
-
     const prompt = ACTIVITY_CHAT_PROMPTS[activityType];
 
     const response = await this.openaiService.createChatCompletion(
