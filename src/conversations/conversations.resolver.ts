@@ -14,7 +14,6 @@ import { Conversation } from './dtos/object-types/conversation.object-type';
 import { Conversation as ConversationDBSchema } from './schemas/conversation.schema';
 import { UserService } from 'src/users/users.service';
 import { ChatArgs } from './dtos/args/chat.args';
-import { ChatResponse } from './dtos/object-types/chat.object-type';
 import { ActivityChatArgs } from './dtos/args/activity-chat.args';
 
 @Resolver(() => Conversation)
@@ -37,12 +36,12 @@ export class ConversationResolver {
     return this.conversationService.findAll({ userId, title });
   }
 
-  @Mutation(() => ChatResponse)
+  @Mutation(() => Conversation)
   public async chat(@Args() args: ChatArgs) {
     return this.conversationService.chat(args);
   }
 
-  @Mutation(() => ChatResponse)
+  @Mutation(() => Conversation)
   public async activityChat(@Args() args: ActivityChatArgs) {
     return this.conversationService.activityChat(args);
   }

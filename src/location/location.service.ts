@@ -121,6 +121,7 @@ export class LocationService {
       this.httpService.get<{ datetime: string }>(requestUrl).pipe(
         catchError((error: AxiosError) => {
           // this.logger.error(error.response.data);
+          console.log(error);
           throw `Error fetching local time info for timezone: ${timezone}. Error: ${JSON.stringify(
             error.response?.data,
           )}.`;

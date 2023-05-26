@@ -22,12 +22,6 @@ type AuthProfile {
   sub: String!
 }
 
-"""Chat response object type."""
-type ChatResponse {
-  conversationId: ID!
-  response: String!
-}
-
 """Conversation object type."""
 type Conversation {
   _id: ID!
@@ -64,9 +58,9 @@ type Message {
 }
 
 type Mutation {
-  activityChat(activityType: ActivityChatType!, conversationId: String, location: LocationInput, userId: String!): ChatResponse!
+  activityChat(activityType: ActivityChatType!, conversationId: String, location: LocationInput, userId: String!): Conversation!
   anonymousRegister: Auth!
-  chat(conversationId: String, location: LocationInput, prompt: String!, userId: String!): ChatResponse!
+  chat(conversationId: String, location: LocationInput, prompt: String!, userId: String!): Conversation!
   createUser(firstname: String, lastname: String, password: String, preferences: [String!], username: String!): User!
 }
 

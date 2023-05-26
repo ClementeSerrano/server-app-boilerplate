@@ -16,7 +16,6 @@ import { ChatArgs } from './dtos/args/chat.args';
 import { FindConversationsDto } from './dtos/find-conversations.dto';
 import { CreateMessageDto } from './dtos/create-message.dto';
 import { LocationService } from 'src/location/location.service';
-import { ChatResponse } from './dtos/object-types/chat.object-type';
 import { ActivityChatArgs } from './dtos/args/activity-chat.args';
 import { ACTIVITY_CHAT_PROMPTS } from './constants/activity-chat.constants';
 
@@ -87,7 +86,7 @@ export class ConversationsService {
    * assistant's response.
    * @returns The completion response and corresponding conversation ID.
    */
-  public async chat(chatDto: ChatArgs): Promise<ChatResponse> {
+  public async chat(chatDto: ChatArgs): Promise<Conversation> {
     const prompt = chatDto.prompt;
     const userId = chatDto.userId;
     let conversationId = chatDto.conversationId;
@@ -135,7 +134,7 @@ export class ConversationsService {
       content: response,
     });
 
-    return { response, conversationId };
+    return conversation;
   }
 
   /**
@@ -145,7 +144,7 @@ export class ConversationsService {
    */
   public async activityChat(
     activityChatDto: ActivityChatArgs,
-  ): Promise<ChatResponse> {
+  ): Promise<Conversation> {
     const activityType = activityChatDto.activityType;
     const userId = activityChatDto.userId;
     let conversationId = activityChatDto.conversationId;
@@ -179,6 +178,8 @@ export class ConversationsService {
       locationContext,
     });
 
+    console.log({ messages });
+
     const prompt = ACTIVITY_CHAT_PROMPTS[activityType];
 
     const response = await this.openaiService.createChatCompletion(
@@ -194,7 +195,7 @@ export class ConversationsService {
       content: response,
     });
 
-    return { response, conversationId };
+    return conversation;
   }
 
   /**
