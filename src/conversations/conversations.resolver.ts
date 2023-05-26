@@ -15,6 +15,7 @@ import { Conversation as ConversationDBSchema } from './schemas/conversation.sch
 import { UserService } from 'src/users/users.service';
 import { ChatArgs } from './dtos/args/chat.args';
 import { ChatResponse } from './dtos/object-types/chat.object-type';
+import { ActivityChatArgs } from './dtos/args/activity-chat.args';
 
 @Resolver(() => Conversation)
 export class ConversationResolver {
@@ -39,6 +40,11 @@ export class ConversationResolver {
   @Mutation(() => ChatResponse)
   public async chat(@Args() args: ChatArgs) {
     return this.conversationService.chat(args);
+  }
+
+  @Mutation(() => ChatResponse)
+  public async activityChat(@Args() args: ActivityChatArgs) {
+    return this.conversationService.activityChat(args);
   }
 
   @ResolveField('messages', () => [Message])

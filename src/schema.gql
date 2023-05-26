@@ -2,6 +2,15 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+enum ActivityChatType {
+  bars
+  culture
+  parks
+  restaurants
+  shopping
+  surpriseMe
+}
+
 """auth"""
 type Auth {
   accessToken: String!
@@ -55,6 +64,7 @@ type Message {
 }
 
 type Mutation {
+  activityChat(activityType: ActivityChatType!, conversationId: String, location: LocationInput, userId: String!): ChatResponse!
   anonymousRegister: Auth!
   chat(conversationId: String, location: LocationInput, prompt: String!, userId: String!): ChatResponse!
   createUser(firstname: String, lastname: String, password: String, preferences: [String!], username: String!): User!

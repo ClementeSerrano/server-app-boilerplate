@@ -12,10 +12,13 @@ import {
 import { Message, MessageDocument } from './schemas/message.schema';
 import { CreateConversationDto } from './dtos/create-conversation.dto';
 import { PrepareMessagesDto } from './dtos/prepare-messages.dto';
-import { ChatDto } from './dtos/chat.dto';
+import { ChatArgs } from './dtos/args/chat.args';
 import { FindConversationsDto } from './dtos/find-conversations.dto';
 import { CreateMessageDto } from './dtos/create-message.dto';
 import { LocationService } from 'src/location/location.service';
+import { ChatResponse } from './dtos/object-types/chat.object-type';
+import { ActivityChatArgs } from './dtos/args/activity-chat.args';
+import { ACTIVITY_CHAT_PROMPTS } from './constants/activity-chat.constants';
 
 @Injectable()
 export class ConversationsService {
@@ -84,9 +87,7 @@ export class ConversationsService {
    * assistant's response.
    * @returns The completion response and corresponding conversation ID.
    */
-  public async chat(
-    chatDto: ChatDto,
-  ): Promise<{ response: string; conversationId: string }> {
+  public async chat(chatDto: ChatArgs): Promise<ChatResponse> {
     const prompt = chatDto.prompt;
     const userId = chatDto.userId;
     let conversationId = chatDto.conversationId;
@@ -120,6 +121,65 @@ export class ConversationsService {
       userPreferences,
       locationContext,
     });
+
+    const response = await this.openaiService.createChatCompletion(
+      prompt,
+      messages,
+    );
+
+    // Save the user's message and the assistant's response to the conversation
+    await this.createMessage({ conversationId, role: 'user', content: prompt });
+    await this.createMessage({
+      conversationId,
+      role: 'assistant',
+      content: response,
+    });
+
+    return { response, conversationId };
+  }
+
+  /**
+   * Handles an activity recommendation chat request sending the user's prompt to the OpenAI Chat API and returning the
+   * assistant's response.
+   * @returns The completion response and corresponding conversation ID.
+   */
+  public async activityChat(
+    activityChatDto: ActivityChatArgs,
+  ): Promise<ChatResponse> {
+    const activityType = activityChatDto.activityType;
+    const userId = activityChatDto.userId;
+    let conversationId = activityChatDto.conversationId;
+
+    // Create a new conversation if no conversationId is provided
+    if (!conversationId) {
+      const newConversation = await this.create({ userId });
+
+      conversationId = newConversation._id.toString();
+    }
+
+    const conversation = await this.findById(conversationId);
+
+    if (!conversation) {
+      throw new Error('Conversation not found');
+    }
+
+    const userPreferences = await this.userService.findPreferences(userId);
+    let locationContext;
+
+    if (activityChatDto.location) {
+      locationContext = await this.locationService.getLocationContext({
+        latitude: activityChatDto.location.latitude,
+        longitude: activityChatDto.location.longitude,
+      });
+    }
+
+    const messages = this.prepareMessages({
+      conversationMessages: [],
+      userPreferences,
+      locationContext,
+    });
+
+    const prompt = ACTIVITY_CHAT_PROMPTS[activityType];
 
     const response = await this.openaiService.createChatCompletion(
       prompt,
