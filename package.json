@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@apollo/server": "^4.7.0",
+    "@googlemaps/google-maps-services-js": "^3.3.31",
     "@nestjs/apollo": "^11.0.5",
     "@nestjs/axios": "^2.0.0",
     "@nestjs/common": "^9.0.0",

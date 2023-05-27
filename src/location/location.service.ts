@@ -6,10 +6,14 @@ import { catchError, firstValueFrom } from 'rxjs';
 import * as dayjs from 'dayjs';
 import * as timezone from 'dayjs/plugin/timezone';
 import * as utc from 'dayjs/plugin/utc';
+import {
+  Client as GoogleMapsClient,
+  Status as GoogleMapsResponseStatus,
+  AddressType as GoogleMapsAddressType,
+} from '@googlemaps/google-maps-services-js';
 
-import { GetLocationContextDto } from './dtos/get-location-context.dto';
-import { OpenCageResponse } from './dtos/opencage-response.dto';
 import { LocationContext } from './interfaces/location-context.interface';
+import { GetLocationContextDto } from './dtos/get-location-context.dto';
 import { OpenWeatherResponse } from './dtos/openweather-response.dto';
 import { Geocode } from './interfaces/geocode.interface';
 import { Weather } from './interfaces/weather.interface';
@@ -19,17 +23,22 @@ dayjs.extend(timezone);
 
 @Injectable()
 export class LocationService {
-  private readonly openCageApiKey: string;
   private readonly openWeatherApiKey: string;
+  private readonly googleMapsApiKey: string;
+  private readonly googleMapsClient: GoogleMapsClient;
 
   constructor(
-    private readonly httpService: HttpService,
     private readonly configService: ConfigService,
+    private readonly httpService: HttpService,
   ) {
-    this.openCageApiKey = this.configService.get<string>('OPENCAGE_API_KEY');
     this.openWeatherApiKey = this.configService.get<string>(
       'OPENWEATHER_API_KEY',
     );
+    this.googleMapsApiKey = this.configService.get<string>(
+      'GOOGLE_MAPS_API_KEY',
+    );
+
+    this.googleMapsClient = new GoogleMapsClient({});
   }
 
   public async getLocationContext(
@@ -37,15 +46,16 @@ export class LocationService {
   ): Promise<LocationContext> {
     const { latitude, longitude } = getLocationContextDto;
 
-    const [geocodeResponse, weatherResponse] = await Promise.all([
-      this.getGeocodeData(latitude, longitude),
-      this.getWeatherData(latitude, longitude),
-    ]);
+    const [geocodeResponse, weatherResponse, localTimeResponse] =
+      await Promise.all([
+        this.getGeocodeData(latitude, longitude),
+        this.getWeatherData(latitude, longitude),
+        this.getLocalTime(latitude, longitude),
+      ]);
 
-    const { country, city, suburb, street, houseNumber, timezone } =
-      geocodeResponse;
-    const localTime = await this.getLocalTime(timezone);
+    const { country, city, suburb, street, houseNumber } = geocodeResponse;
     const weather = weatherResponse;
+    const localTime = localTimeResponse;
 
     return {
       country,
@@ -53,7 +63,6 @@ export class LocationService {
       suburb,
       street,
       houseNumber,
-      timezone,
       localTime,
       weather,
     };
@@ -63,27 +72,45 @@ export class LocationService {
     latitude: number,
     longitude: number,
   ): Promise<Geocode> {
-    const requestUrl = `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=${this.openCageApiKey}`;
+    try {
+      const response = await this.googleMapsClient.reverseGeocode({
+        params: {
+          latlng: { latitude, longitude },
+          key: this.googleMapsApiKey,
+        },
+        timeout: 1000,
+      });
 
-    const { data } = await firstValueFrom<{ data: OpenCageResponse }>(
-      this.httpService.get<OpenCageResponse>(requestUrl).pipe(
-        catchError((error: AxiosError) => {
-          // this.logger.error(error.response.data);
-          throw `Error fetching geocode info for latitude: ${latitude}, longitude: ${longitude}. Error: ${JSON.stringify(
-            error.response.data,
-          )}.`;
-        }),
-      ),
-    );
+      const components = response.data.results[0].address_components;
 
-    return {
-      country: data.results[0].components.country,
-      city: data.results[0].components.city,
-      suburb: data.results[0].components.suburb,
-      street: data.results[0].components.road,
-      houseNumber: data.results[0].components.house_number,
-      timezone: data.results[0].annotations.timezone.name,
-    };
+      const countryComponent = components.find((c) =>
+        c.types.includes(GoogleMapsAddressType.country),
+      );
+      const cityComponent = components.find((c) =>
+        c.types.includes(GoogleMapsAddressType.locality),
+      );
+      const suburbComponent = components.find((c) =>
+        c.types.includes(GoogleMapsAddressType.sublocality),
+      );
+      const streetComponent = components.find((c) =>
+        c.types.includes(GoogleMapsAddressType.route),
+      );
+      const houseNumberComponent = components.find((c) =>
+        c.types.includes(GoogleMapsAddressType.street_number),
+      );
+
+      return {
+        country: countryComponent?.long_name,
+        city: cityComponent?.long_name,
+        suburb: suburbComponent?.long_name,
+        street: streetComponent?.long_name,
+        houseNumber: houseNumberComponent?.long_name,
+      };
+    } catch (err) {
+      throw `Error fetching geocode info for latitude: ${latitude}, longitude: ${longitude}. Error: ${JSON.stringify(
+        (err as AxiosError).response?.data,
+      )}.`;
+    }
   }
 
   private async getWeatherData(
@@ -114,23 +141,36 @@ export class LocationService {
     };
   }
 
-  private async getLocalTime(timezone: string): Promise<string> {
-    const requestUrl = `http://worldtimeapi.org/api/timezone/${timezone}`;
+  private async getLocalTime(
+    latitude: number,
+    longitude: number,
+  ): Promise<string> {
+    const params = {
+      key: this.googleMapsApiKey,
+      location: `${latitude},${longitude}`,
+      timestamp: Math.floor(new Date().getTime() / 1000), // current timestamp in seconds
+    };
 
-    const { data } = await firstValueFrom<{ data: { datetime: string } }>(
-      this.httpService.get<{ datetime: string }>(requestUrl).pipe(
-        catchError((error: AxiosError) => {
-          // this.logger.error(error.response.data);
-          throw `Error fetching local time info for timezone: ${timezone}. Error: ${JSON.stringify(
-            error.response?.data,
-          )}.`;
-        }),
-      ),
-    );
+    try {
+      const response = await this.googleMapsClient.timezone({
+        params,
+        timeout: 1000,
+      });
 
-    const date = dayjs(data.datetime).tz(timezone);
-    const formattedDate = date.format('MMMM D, YYYY - h:mm A');
+      if (response.data.status === GoogleMapsResponseStatus.OK) {
+        const timeZoneId = response.data.timeZoneId;
+        const localTime = dayjs()
+          .tz(timeZoneId)
+          .format('MMMM D, YYYY - h:mm A');
 
-    return formattedDate;
+        return localTime;
+      } else {
+        throw new Error(
+          `Error fetching local time for ${params.location}. Response status: ${response.data.status}`,
+        );
+      }
+    } catch (err) {
+      throw err;
+    }
   }
 }

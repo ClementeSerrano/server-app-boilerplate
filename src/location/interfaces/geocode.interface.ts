@@ -4,5 +4,4 @@ export type Geocode = {
   suburb: string;
   street: string;
   houseNumber: string;
-  timezone: string; // in IANA format.
 };
