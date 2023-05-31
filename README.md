@@ -123,6 +123,29 @@ $ yarn run test:e2e
 $ yarn run test:cov
 ```
 
+## Managing releases
+
+Each new release of major, minor or patches versions of Fixer follow a release procedure summarized as follows:
+
+1. Update repository docs with the new release details:
+
+   1.1. Update the `package.json` with the new release version. We follow the [Semantic Versioning](https://semver.org/) standard for defining each version of the app.
+
+   1.2. Update the `CHANGELOG.md` file with the additions and changes of the release.
+
+2. Tag and push the new release (use the prefix `v` before the version number):
+
+   ```bash
+   git tag v[major.minor.patch]
+   git push origin v[major.minor.patch]
+   ```
+
+   An example for `v[major.minor.patch]` could be: `v1.0.2`.
+
+3. Create the release on Github repository and specify the title and content. Follow Github's [Managing releases](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository?tool=webui) docs for guidance on this.
+
+4. Proceed to deploy on our cloud providers.
+
 ## Stay in touch
 
 - Author - [Clemente Sutil](https://kamilmysliwiec.com)
