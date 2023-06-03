@@ -18,6 +18,7 @@ import { CreateMessageDto } from './dtos/create-message.dto';
 import { LocationService } from 'src/location/location.service';
 import { ActivityChatArgs } from './dtos/args/activity-chat.args';
 import { ACTIVITY_CHAT_PROMPTS } from './constants/activity-chat.constants';
+import { extractObjectsFromText } from 'src/common/helpers/extract-template-literals';
 
 @Injectable()
 export class ConversationsService {
@@ -185,12 +186,21 @@ export class ConversationsService {
       messages,
     );
 
+    const responseLiterals = extractObjectsFromText<{ place: string }>(
+      response,
+    );
+
+    const recommendedPlace = this.locationService.getPlaceData(
+      responseLiterals.place,
+    );
+
     // Save the user's message and the assistant's response to the conversation
     await this.createMessage({ conversationId, role: 'user', content: prompt });
     await this.createMessage({
       conversationId,
       role: 'assistant',
       content: response,
+      metadata: { place: recommendedPlace },
     });
 
     return conversation;

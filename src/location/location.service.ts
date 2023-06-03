@@ -17,6 +17,7 @@ import { GetLocationContextDto } from './dtos/get-location-context.dto';
 import { OpenWeatherResponse } from './dtos/openweather-response.dto';
 import { Geocode } from './interfaces/geocode.interface';
 import { Weather } from './interfaces/weather.interface';
+import { Place } from './interfaces/place.interface';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -68,7 +69,7 @@ export class LocationService {
     };
   }
 
-  private async getGeocodeData(
+  public async getGeocodeData(
     latitude: number,
     longitude: number,
   ): Promise<Geocode> {
@@ -113,7 +114,7 @@ export class LocationService {
     }
   }
 
-  private async getWeatherData(
+  public async getWeatherData(
     latitude: number,
     longitude: number,
   ): Promise<Weather> {
@@ -141,7 +142,7 @@ export class LocationService {
     };
   }
 
-  private async getLocalTime(
+  public async getLocalTime(
     latitude: number,
     longitude: number,
   ): Promise<string> {
@@ -172,5 +173,13 @@ export class LocationService {
     } catch (err) {
       throw err;
     }
+  }
+
+  public getPlaceData(placeName: string): Place {
+    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+      placeName,
+    )}`;
+
+    return { mapsUrl, name: placeName };
   }
 }
