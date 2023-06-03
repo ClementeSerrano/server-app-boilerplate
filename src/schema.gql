@@ -53,8 +53,14 @@ type Message {
   _id: ID!
   content: String!
   createdAt: DateTime!
+  metadata: MessageMetadata
   role: ConversationUserRole!
   updatedAt: DateTime!
+}
+
+"""Message metadata object type."""
+type MessageMetadata {
+  place: Place
 }
 
 type Mutation {
@@ -62,6 +68,12 @@ type Mutation {
   anonymousRegister: Auth!
   chat(conversationId: String, location: LocationInput, prompt: String!, userId: String!): Conversation!
   createUser(firstname: String, lastname: String, password: String, preferences: [String!], username: String!): User!
+}
+
+"""Place object type."""
+type Place {
+  mapsUrl: String
+  name: String!
 }
 
 type Query {
