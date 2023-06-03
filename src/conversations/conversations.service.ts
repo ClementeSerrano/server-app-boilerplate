@@ -18,7 +18,7 @@ import { CreateMessageDto } from './dtos/create-message.dto';
 import { LocationService } from 'src/location/location.service';
 import { ActivityChatArgs } from './dtos/args/activity-chat.args';
 import { ACTIVITY_CHAT_PROMPTS } from './constants/activity-chat.constants';
-import { extractObjectsFromText } from 'src/common/helpers/extract-template-literals';
+import { extractObjectsFromText } from 'src/common/helpers/extract-objects-from-text';
 
 @Injectable()
 export class ConversationsService {
@@ -127,12 +127,21 @@ export class ConversationsService {
       messages,
     );
 
+    const responseObjects = extractObjectsFromText<{ place?: string }>(
+      response,
+    );
+
+    const recommendedPlaces = responseObjects.map((object) =>
+      this.locationService.getPlaceData(object.place),
+    );
+
     // Save the user's message and the assistant's response to the conversation
     await this.createMessage({ conversationId, role: 'user', content: prompt });
     await this.createMessage({
       conversationId,
       role: 'assistant',
       content: response,
+      metadata: { places: recommendedPlaces },
     });
 
     return conversation;
@@ -164,6 +173,7 @@ export class ConversationsService {
     }
 
     const userPreferences = await this.userService.findPreferences(userId);
+
     let locationContext;
 
     if (activityChatDto.location) {
@@ -186,12 +196,12 @@ export class ConversationsService {
       messages,
     );
 
-    const responseLiterals = extractObjectsFromText<{ place: string }>(
+    const responseObjects = extractObjectsFromText<{ place?: string }>(
       response,
     );
 
-    const recommendedPlace = this.locationService.getPlaceData(
-      responseLiterals.place,
+    const recommendedPlaces = responseObjects.map((object) =>
+      this.locationService.getPlaceData(object.place),
     );
 
     // Save the user's message and the assistant's response to the conversation
@@ -200,7 +210,7 @@ export class ConversationsService {
       conversationId,
       role: 'assistant',
       content: response,
-      metadata: { place: recommendedPlace },
+      metadata: { places: recommendedPlaces },
     });
 
     return conversation;

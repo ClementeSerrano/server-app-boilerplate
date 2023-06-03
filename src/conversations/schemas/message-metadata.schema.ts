@@ -6,9 +6,9 @@ import { PlaceSchema } from 'src/location/schemas/place.schema';
 @Schema()
 export class MessageMetadata {
   @Prop({
-    type: PlaceSchema,
+    type: [PlaceSchema],
   })
-  place?: Place;
+  places?: Place[];
 }
 
 export const MessageMetadataSchema =

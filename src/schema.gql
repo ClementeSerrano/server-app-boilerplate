@@ -60,7 +60,7 @@ type Message {
 
 """Message metadata object type."""
 type MessageMetadata {
-  place: Place
+  places: [Place!]
 }
 
 type Mutation {

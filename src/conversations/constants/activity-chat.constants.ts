@@ -7,7 +7,7 @@ export const ACTIVITY_CHAT_PROMPTS: Record<ActivityChatType, string> = {
     'Recommend me a cultural activity according to my interests and the weather.',
   restaurants:
     'Recommend me a good restaurant in the area according to my interests and the weather. What can I order there?',
-  bars: 'Recommend me a good bar in the area. What is special from there?',
+  bars: 'Recommend me a good bar in the area. Any special drink or thing to do there?',
   shopping:
     'Recommend me a good shopping place to go in the area. Consider my local time.',
   parks:
