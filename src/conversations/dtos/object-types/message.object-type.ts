@@ -1,4 +1,5 @@
 import { Field, ID, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { MessageMetadata } from './message-metadata.object-type';
 
 enum ConversationUserRole {
   'system' = 'system',
@@ -26,4 +27,7 @@ export class Message {
 
   @Field(() => String)
   content: string;
+
+  @Field(() => MessageMetadata, { nullable: true })
+  metadata?: MessageMetadata;
 }
