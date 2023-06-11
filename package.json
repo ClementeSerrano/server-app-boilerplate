@@ -38,6 +38,7 @@
     "axios": "^1.4.0",
     "bcrypt": "^5.1.0",
     "dayjs": "^1.11.7",
+    "express-oauth2-jwt-bearer": "^1.5.0",
     "graphql": "^16.6.0",
     "mongoose": "^7.0.4",
     "openai": "^3.2.1",

@@ -33,6 +33,8 @@ export class OpenAIService {
     prompt: string,
     messages: ChatCompletionRequestMessage[],
   ): Promise<string> {
+    console.log(JSON.stringify({ prompt, messages }));
+
     try {
       const result = await this.apiClient.createChatCompletion({
         ...CHAT_COMPLETION_BASE_CONFIG,
