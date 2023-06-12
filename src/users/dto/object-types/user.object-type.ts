@@ -19,7 +19,13 @@ export class User {
   username: string;
 
   @Field({ nullable: true })
+  email?: string;
+
+  @Field({ nullable: true })
   firstname?: string;
+
+  @Field({ nullable: true })
+  avatar?: string;
 
   @Field({ nullable: true })
   lastname?: string;
@@ -35,4 +41,7 @@ export class User {
 
   @Field(() => AuthType)
   authType: AuthType;
+
+  @Field(() => ID, { nullable: true })
+  oauthId?: string;
 }

@@ -28,7 +28,7 @@ export class AuthService {
       throw new NotFoundException('User not found.');
     }
 
-    return { userId, ...user };
+    return { userId, ...user.toObject() };
   }
 
   public async anonymousRegister(): Promise<{ accessToken: string }> {
@@ -55,15 +55,10 @@ export class AuthService {
     const user = await this.userService.findById(userId, userDto.authType);
 
     if (!user) {
-      let username = uuidv4();
-
-      if (userDto instanceof AuthProfile) {
-        username = userDto.username || userDto.email;
-      }
-
       await this.userService.create({
         ...userDto,
-        username,
+        username:
+          (userDto as AuthProfile).username || (userDto as AuthProfile).email,
         oauthId: userId,
       });
     }

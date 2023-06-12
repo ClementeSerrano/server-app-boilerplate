@@ -26,7 +26,7 @@ export class UserService {
   public async findById(
     _id: string,
     authType: AuthType = 'native',
-  ): Promise<User> {
+  ): Promise<UserDocument> {
     if (authType === 'oauth2') {
       return this.userModel.findOne({ oauthId: _id }).exec();
     }
