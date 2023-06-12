@@ -18,9 +18,15 @@ type Auth {
 
 """Auth profile"""
 type AuthProfile {
+  _id: ID!
   authType: AuthType!
-  user: User!
+  createdAt: DateTime!
+  firstname: String
+  lastname: String
+  preferences: [String!]
+  updatedAt: DateTime!
   userId: String!
+  username: String!
 }
 
 enum AuthType {

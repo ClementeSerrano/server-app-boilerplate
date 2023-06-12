@@ -1,5 +1,14 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { AuthType } from 'src/auth/dtos/object-types/auth-profile.object-type';
+import { Field, ID, ObjectType, registerEnumType } from '@nestjs/graphql';
+
+export enum AuthType {
+  'anonymous' = 'anonymous',
+  'oauth2' = 'oauth2',
+  'native' = 'native',
+}
+
+registerEnumType(AuthType, {
+  name: 'AuthType',
+});
 
 @ObjectType({ description: 'User object type.' })
 export class User {
