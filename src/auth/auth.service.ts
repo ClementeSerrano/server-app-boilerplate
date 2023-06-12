@@ -50,23 +50,21 @@ export class AuthService {
   public async oauthRegister(
     oauthRegisterDto: OAuthRegisterDto,
   ): Promise<{ accessToken: string }> {
-    const user = await this.userService.findById(
-      oauthRegisterDto.user.userId,
-      oauthRegisterDto.user.authType,
-    );
+    const { userId, ...userDto } = oauthRegisterDto.user;
+
+    const user = await this.userService.findById(userId, userDto.authType);
 
     if (!user) {
       let username = uuidv4();
 
-      if (oauthRegisterDto.user instanceof AuthProfile) {
-        username =
-          oauthRegisterDto.user.username || oauthRegisterDto.user.email;
+      if (userDto instanceof AuthProfile) {
+        username = userDto.username || userDto.email;
       }
 
       await this.userService.create({
-        ...user,
+        ...userDto,
         username,
-        oauthId: oauthRegisterDto.user.userId,
+        oauthId: userId,
       });
     }
 
