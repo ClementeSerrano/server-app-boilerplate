@@ -2,25 +2,25 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 
 import { User } from './dto/object-types/user.object-type';
 import { UserService } from './users.service';
-import { FindUserArgs } from './dto/find-user.dto';
-import { CreateUserArgs } from './dto/create-user.dto';
+import { FindUserArgs } from './dto/args/find-user.args';
+import { CreateUserArgs } from './dto/args/create-user.args';
 
-@Resolver((of) => User)
+@Resolver(() => User)
 export class UsersResolver {
   constructor(private readonly userService: UserService) {}
 
-  @Query((returns) => User)
+  @Query(() => User)
   public async user(@Args() args: FindUserArgs) {
     return this.userService.findOne(args);
   }
 
-  @Query((returns) => [User])
+  @Query(() => [User])
   public async users() {
     return this.userService.findAll();
   }
 
-  @Mutation((returns) => User)
+  @Mutation(() => User)
   public async createUser(@Args() args: CreateUserArgs) {
-    return this.userService.create({ ...args, isAnonymous: false });
+    return this.userService.create({ ...args, authType: 'native' });
   }
 }

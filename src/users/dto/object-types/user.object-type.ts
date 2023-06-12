@@ -1,4 +1,5 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { AuthType } from 'src/auth/dtos/object-types/auth-profile.object-type';
 
 @ObjectType({ description: 'User object type.' })
 export class User {
@@ -23,6 +24,6 @@ export class User {
   @Field(() => [String], { nullable: true })
   preferences?: string[];
 
-  @Field(() => Boolean)
-  isAnonymous: boolean;
+  @Field(() => AuthType)
+  authType: AuthType;
 }
