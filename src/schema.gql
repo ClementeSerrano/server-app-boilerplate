@@ -16,10 +16,26 @@ type Auth {
   accessToken: String!
 }
 
-"""auth-profile"""
+"""Auth profile"""
 type AuthProfile {
-  isAnonymous: Boolean!
-  sub: String!
+  _id: ID!
+  authType: AuthType!
+  avatar: String
+  createdAt: DateTime!
+  email: String
+  firstname: String
+  lastname: String
+  oauthId: ID
+  preferences: [String!]
+  updatedAt: DateTime!
+  userId: String!
+  username: String!
+}
+
+enum AuthType {
+  anonymous
+  native
+  oauth2
 }
 
 """Conversation object type."""
@@ -68,6 +84,7 @@ type Mutation {
   anonymousRegister: Auth!
   chat(conversationId: String, location: LocationInput, prompt: String!, userId: String!): Conversation!
   createUser(firstname: String, lastname: String, password: String, preferences: [String!], username: String!): User!
+  oauthRegister: Auth!
 }
 
 """Place object type."""
@@ -87,10 +104,13 @@ type Query {
 """User object type."""
 type User {
   _id: ID!
+  authType: AuthType!
+  avatar: String
   createdAt: DateTime!
+  email: String
   firstname: String
-  isAnonymous: Boolean!
   lastname: String
+  oauthId: ID
   preferences: [String!]
   updatedAt: DateTime!
   username: String!

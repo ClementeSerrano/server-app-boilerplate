@@ -6,18 +6,27 @@ import { Auth } from './dtos/object-types/auth.object-type';
 import { AuthProfile } from './dtos/object-types/auth-profile.object-type';
 import { AuthContext } from './interfaces/auth-context.interface';
 
-@Resolver((of) => Auth)
+@Resolver(() => Auth)
 export class AuthResolver {
   constructor(private readonly authService: AuthService) {}
 
-  @Query((returns) => AuthProfile)
+  @Query(() => AuthProfile)
   public profile(@Context() context: AuthContext) {
-    return context.req.user;
+    return this.authService.findProfile(context.req.user);
   }
 
   @Public()
-  @Mutation((returns) => Auth)
+  @Mutation(() => Auth)
+  // TODO: Add deviceId
   public async anonymousRegister() {
     return this.authService.anonymousRegister();
+  }
+
+  @Mutation(() => Auth)
+  public async oauthRegister(@Context() context: AuthContext) {
+    return this.authService.oauthRegister({
+      user: context.req.user,
+      accessToken: context.req.headers.authorization,
+    });
   }
 }

@@ -1,4 +1,14 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, ObjectType, registerEnumType } from '@nestjs/graphql';
+
+export enum AuthType {
+  'anonymous' = 'anonymous',
+  'oauth2' = 'oauth2',
+  'native' = 'native',
+}
+
+registerEnumType(AuthType, {
+  name: 'AuthType',
+});
 
 @ObjectType({ description: 'User object type.' })
 export class User {
@@ -9,7 +19,13 @@ export class User {
   username: string;
 
   @Field({ nullable: true })
+  email?: string;
+
+  @Field({ nullable: true })
   firstname?: string;
+
+  @Field({ nullable: true })
+  avatar?: string;
 
   @Field({ nullable: true })
   lastname?: string;
@@ -23,6 +39,9 @@ export class User {
   @Field(() => [String], { nullable: true })
   preferences?: string[];
 
-  @Field(() => Boolean)
-  isAnonymous: boolean;
+  @Field(() => AuthType)
+  authType: AuthType;
+
+  @Field(() => ID, { nullable: true })
+  oauthId?: string;
 }

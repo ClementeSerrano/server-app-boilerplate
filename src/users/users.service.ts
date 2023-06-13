@@ -6,6 +6,7 @@ import * as bcrypt from 'bcrypt';
 import { User, UserDocument } from './schemas/user.schema';
 import { FindUserDto } from './dto/find-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
+import { AuthType } from 'src/auth/interfaces/auth-type.interfaces';
 
 @Injectable()
 export class UserService {
@@ -22,7 +23,14 @@ export class UserService {
     return this.userModel.findOne(findUserDto);
   }
 
-  public async findById(_id: string): Promise<User> {
+  public async findById(
+    _id: string,
+    authType: AuthType = 'native',
+  ): Promise<UserDocument> {
+    if (authType === 'oauth2') {
+      return this.userModel.findOne({ oauthId: _id }).exec();
+    }
+
     return this.userModel.findById(_id).exec();
   }
 

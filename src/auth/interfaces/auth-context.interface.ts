@@ -1,7 +1,10 @@
-import { Request } from 'express';
+import { Request, Response } from 'express';
 
-import { AuthProfile } from './auth-profile.interface';
+import { AuthPartialProfile, AuthProfile } from './auth-profile.interface';
 
 export type AuthContext = {
-  req: Request & { user: AuthProfile };
+  req: Request & {
+    user: AuthPartialProfile | AuthProfile;
+  };
+  res: Response;
 };
