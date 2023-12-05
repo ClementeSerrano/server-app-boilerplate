@@ -1,12 +1,5 @@
-<p align="center">
-  <a href="http://get-fixer.com/" target="blank"><img src="https://i.postimg.cc/Pxn1BCXF/Isotype-rounded.png" width="200" alt="Fixer Logo" /></a>
-</p>
-
 [circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
 [circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">Fixer: The fastlane to city access.</p>
-    <p align="center">
 <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
 <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
 <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
@@ -24,7 +17,7 @@
 
 ## Description
 
-Fixer server repository.
+Scalable app boilerplate to start building a monolithic server from.
 
 ## Prerequisites
 
@@ -148,10 +141,8 @@ Each new release of major, minor or patches versions of Fixer follow a release p
 
 ## Stay in touch
 
-- Author - [Clemente Sutil](https://kamilmysliwiec.com)
-- Website - [https://get-fixer.com](https://get-fixer.com/)
-- Twitter - [@FixerHQ](https://twitter.com/FixerHQ)
+- Author - [Clemente Serrano](https://www.linkedin.com/in/clementesutil/)
 
 ## License
 
-Fixer is [MIT licensed](LICENSE).
+This repo is [MIT licensed](LICENSE).

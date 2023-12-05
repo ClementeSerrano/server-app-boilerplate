@@ -1,8 +1,8 @@
 {
-  "name": "service",
+  "name": "server-app-boilerplate",
   "version": "0.0.5",
   "description": "",
-  "author": "",
+  "author": "Clemente Serrano",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
